@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 
 from .forms import Form
@@ -11,7 +11,7 @@ def select_condition():
     """
     return 0
 
-#
+
 # def index(request):
 #     template = loader.get_template('modeling_test/index.html')
 #     context = {}
@@ -28,9 +28,10 @@ def index(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            template = loader.get_template('group0/index.html')
-            context = {'condition': select_condition()}
-            return HttpResponseRedirect(template.render(context, request))
+            condition = select_condition()
+            # return render(request, f'group{condition}/index.html', {})
+            return redirect(f'/group{condition}/')
+
     # if a GET (or any other method) we'll create a blank form
     else:
         form = Form()

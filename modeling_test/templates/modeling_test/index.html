@@ -65,7 +65,7 @@
 {#                    <input class = "submitbtn" type="submit" value="Next">#}
 {#                    #}
 {#                </form> #}
-                <form action="/modeling_test" method="post">
+                <form action="{% url 'modeling_test_index' %}" method="post">
                     {% csrf_token %}
                     {{ form }}
                     <input type="submit" value="Submit">

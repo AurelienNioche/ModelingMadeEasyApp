@@ -20,7 +20,7 @@ urlpatterns = [
     path('group0/', include('group0.urls')),
     path('group1/', include('group1.urls')),
     path('group2/', include('group2.urls')),
-    path('constent_form/', include('consent_form.urls')),
+    path('consent_form/', include('consent_form.urls')),
     path('end/', include('end.urls')),
     path('exp_tutorial/', include('exp_tutorial.urls')),
     path('mme_intro/', include('mme_intro.urls')),
