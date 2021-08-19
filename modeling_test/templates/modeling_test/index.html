@@ -1,7 +1,9 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel= "stylesheet" href="style.css">
+        <link rel= "stylesheet" href="{%  static 'modeling_test/style.css' %}">
         <link rel="shortcut icon" href="#">
         <title>MME User Study</title>
         <style>
@@ -14,15 +16,15 @@
 
             <div class = "note">
                 <p class = "m_note">This modelling test is for understanding your background on Linear Regression Modelling 
-                    and for assessing our teaching tool.</br> It is okay to make mistakes. Please don't be stressed and 
+                    and for assessing our teaching tool.<br> It is okay to make mistakes. Please don't be stressed and
                     just choose your ideal options. And please don't come back to this page to change your answer. 
                     We will come to the same test again later.</p></div>
             
             <div class = "box-one">
-                <div><img class ="scatter_image" src="PVHeight.png" alt="Points VS Height"></div>
-                <div><img class ="scatter_image" src="PVWeight.png" alt="Points VS Weight"></div>
-                <div><img class ="scatter_image" src="PVHair.png" alt="Points VS Hair length"></div>
-                <div><img class ="scatter_image" src="WVH.png" alt="Weight VS Height"></div>
+                <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHeight.png' %}" alt="Points VS Height"></div>
+                <div><img class ="scatter_image" src="{%  static 'modeling_test/PVWeight.png' %}" alt="Points VS Weight"></div>
+                <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHair.png' %}" alt="Points VS Hair length"></div>
+                <div><img class ="scatter_image" src="{%  static 'modeling_test/WVH.png' %}" alt="Weight VS Height"></div>
             </div>
 
             <div class = "box-two">
@@ -37,41 +39,43 @@
                     (Could select one or multiple choices) <br>
                 </p>
                 
-                <!-- <form class = "form" action="/mme_web_user_study/group1/index.html"> -->
-                <form class = "form" id="form_only">    
-                    <!-- <label for="age">3. What is your age?</label><br> -->
-
-                    <input type="checkbox" id="aa" name="test_selection" value="A">
-                    <label for="aa">A. y = a1x1 + b </label><br>
-                    <input type="checkbox" id="bb" name="test_selection" value="B">
-                    <label for="bb">B. y = a2x2 + b </label><br>
-                    <input type="checkbox" id="cc" name="test_selection" value="C">
-                    <label for="cc">C. y = a3x3 + b </label><br>
-                    <input type="checkbox" id="dd" name="test_selection" value="D">
-                    <label for="dd">D. y = a1x1 + a2x2 + b </label><br>
-                    <input type="checkbox" id="dd" name="test_selection" value="D">
-                    <label for="dd">E. y = a1x1 + a3x3 + b  </label><br>
-                    <input type="checkbox" id="dd" name="test_selection" value="D">
-                    <label for="dd">F. y = a2x2 + a3x3 + b  </label><br>
-                    <input type="checkbox" id="dd" name="test_selection" value="D">
-                    <label for="dd">G. y = a1x1 + a2x2 + a3x3 + b  </label><br>
-                    
-                </br>
-                    <label for="reason">Reason:</label><br>
-                    <textarea class = "reason_text" name="test_reason" rows="2" cols="50"></textarea><br>
-
-                
-                    
-                    <input class = "submitbtn" type="submit" value="Next">
-                    
-                </form> 
+{#                <!-- <form class = "form" action="/mme_web_user_study/group1/index.html"> -->#}
+{#                <form class = "form" id="form_only">    #}
+{#                    <!-- <label for="age">3. What is your age?</label><br> -->#}
+{##}
+{#                    <input type="checkbox" id="aa" name="test_selection" value="A">#}
+{#                    <label for="aa">A. y = a1x1 + b </label><br>#}
+{#                    <input type="checkbox" id="bb" name="test_selection" value="B">#}
+{#                    <label for="bb">B. y = a2x2 + b </label><br>#}
+{#                    <input type="checkbox" id="cc" name="test_selection" value="C">#}
+{#                    <label for="cc">C. y = a3x3 + b </label><br>#}
+{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
+{#                    <label for="dd">D. y = a1x1 + a2x2 + b </label><br>#}
+{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
+{#                    <label for="dd">E. y = a1x1 + a3x3 + b  </label><br>#}
+{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
+{#                    <label for="dd">F. y = a2x2 + a3x3 + b  </label><br>#}
+{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
+{#                    <label for="dd">G. y = a1x1 + a2x2 + a3x3 + b  </label><br>#}
+{#                    #}
+{#                </br>#}
+{#                    <label for="reason">Reason:</label><br>#}
+{#                    <textarea class = "reason_text" name="test_reason" rows="2" cols="50"></textarea><br>#}
+{##}
+{#                    <input class = "submitbtn" type="submit" value="Next">#}
+{#                    #}
+{#                </form> #}
+                <form action="/modeling_test" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Submit">
+                </form>
             </div>
-            
-
         </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<script src="script.js"></script>
+{#<script>let condition={{ condition }}</script>#}
+{#<script src="{% static 'modeling_test/script.js' %}"></script>#}
 </body>
 </html>

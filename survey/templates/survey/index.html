@@ -1,7 +1,9 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel= "stylesheet" href="style.css">
+        <link rel= "stylesheet" href="{% static 'survey/style.css'%}">
         <link rel="shortcut icon" href="#">
         <title>CSS Position</title>
         <style>
@@ -19,7 +21,7 @@
 
         </div>
         <div class = "box">
-          <form class = "survey" action="/mme_web_user_study/end/index.html">
+          <form class = "survey" action="/end">
 
             <label for="name">1. How do you feel about the whole experiment:</label><br>
             <textarea class = "survey_text" name="test_reason" rows="2" cols='80'></textarea><br>
@@ -36,7 +38,7 @@
             <label for="name">5. Any other comments :</label><br>
             <textarea class = "survey_text" name="test_reason" rows="2" cols="80"></textarea><br>
 
-            <input class = "submitbtn"type="submit" value="Next">
+            <input class = "submitbtn" type="submit" value="Next">
             
           </form> 
 
@@ -45,7 +47,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<script src="script.js"></script>
+<script src="{% static 'survey/script.js'%}"></script>
 
 </body>
 </html>

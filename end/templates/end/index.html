@@ -1,7 +1,9 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel= "stylesheet" href="style.css">
+    <link rel= "stylesheet" href="{% static 'end/style.css' %}">
     <link rel="shortcut icon" href="#">
     <title>CSS Position</title>
     <style>
@@ -19,7 +21,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="script.js"></script>
+    <script src="{% static 'end/script.js' %}"></script>
 
   </body>
 </html>

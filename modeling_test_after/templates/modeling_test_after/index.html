@@ -1,7 +1,9 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel= "stylesheet" href="style.css">
+        <link rel= "stylesheet" href="{% static 'modeling_test_after/style.css' %}">
         <link rel="shortcut icon" href="#">
         <title>MME User Study</title>
         <style>
@@ -16,10 +18,10 @@
                     This is the same modelling test as before. Based on what you have learnt, please update your answer.
                 </p></div>
             <div class = "box-one">
-                <div><img class ="scatter_image" src="PVHeight.png" alt="Points VS Height"></div>
-                <div><img class ="scatter_image" src="PVWeight.png" alt="Points VS Weight"></div>
-                <div><img class ="scatter_image" src="PVHair.png" alt="Points VS Hair length"></div>
-                <div><img class ="scatter_image" src="WVH.png" alt="Weight VS Height"></div>
+                <div><img class ="scatter_image" src="{% static 'modeling_test_after/PVHeight.png'%}" alt="Points VS Height"></div>
+                <div><img class ="scatter_image" src="{% static 'modeling_test_after/PVWeight.png' %}" alt="Points VS Weight"></div>
+                <div><img class ="scatter_image" src="{%  static 'modeling_test_after/PVHair.png'%}" alt="Points VS Hair length"></div>
+                <div><img class ="scatter_image" src="{%  static 'modeling_test_after/WVH.png'%}" alt="Weight VS Height"></div>
             </div>
 
             <div class = "box-two">
@@ -34,7 +36,7 @@
                     (Could select one or multiple choices) <br>
                 </p>
                 
-                <form class = "form" action="/mme_web_user_study/survey/index.html">
+                <form class = "form" action="/survey">
                     <!-- <label for="age">3. What is your age?</label><br> -->
 
                     <input type="checkbox" id="aa" name="test_selection" value="A">
@@ -51,13 +53,9 @@
                     <label for="dd">F. y = a2x2 + a3x3 + b  </label><br>
                     <input type="checkbox" id="dd" name="test_selection" value="D">
                     <label for="dd">G. y = a1x1 + a2x2 + a3x3 + b  </label><br>
-                    
-                </br>
+
                     <label for="reason">Reason:</label><br>
                     <input class = "reason_text" type="text" id="test_reason" name="t_reason"><br>
-
-                
-                    
                     <input class = "submitbtn" type="submit" value="Next">
                     
                 </form> 
@@ -68,6 +66,6 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<script src="script.js"></script>
+<script src="{% static 'modeling_test_after/script.js'%}"></script>
 </body>
 </html>

@@ -16,7 +16,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 18px;
     display: grid;
-    grid-column: span 2;
     background: linen;
     padding: 5px;
     gap: 5px;
