@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel= "stylesheet" href="style.css">
+        <link rel="shortcut icon" href="#">
+        <title>CSS Position</title>
+        <style>
+        </style>
+        
+    </head>
+    <body>     
+        <div class="grid-parent">
+
+            <div class = "title name"> Modelling Made Easy -- User Experiment</div>
+            <div class = "title name"> <a href="https://aaltofi-my.sharepoint.com/:b:/g/personal/jiayi_zhang_aalto_fi/ETYx6GsZjB9DsamEOw-njQwBKqyicwTXT72gtgRBFDizRg?e=q8tc9s">Tutorial link</a></div>
+
+            <div class = "box-one">
+                <div class = "subtitle">Variable exploration</div>
+                <div class = "note">Note: This session is for exploring the variables. </br>
+                    Click the variables on the left 
+                    to see the relationship between the dependent variable X and the independent variable Y. </div>
+                <div class = "content">
+                    <div class="vbar">
+                        <select class="selectbox" id="variable-one" size=8></select>
+                    </div>
+                    <div class = "chart-c" id="chart-container"></div>
+                </div>
+            </div>
+           
+            <div class = "box-two">
+                <div class = "title-two"><b>Assistance advice</b></div>
+                <div class = "note" id = "note_test">Note: This session is for showing recommendations from AI. AI would give you recommendations based on your model selection.</div>
+                <p class = "v vv" id = "recommendation">Waiting for model selection...</p>
+                <div class = "chart-c" id="chart-container-AI"></div>
+                
+                <div class = "bottom">
+                    <button class = "trybutton" id = "trybuttontwo">Try it</button>
+                </div>
+            </div>
+            
+            <div class = "box-three">
+                <div class = "subtitle">Variable Correlation Exploration</div>
+                <div class = "note">Note: This session is for exploring the relationship between two dependent variables.</div>
+                    <div class = "content-three">
+                        <div class="vbar">
+                            <select class="selectbox" id="variable-two" size=8 style="width:80px;"></select>
+                            
+                        </div>
+                        
+                        <div class="vbar">
+                            <select class="selectbox" id="variable-three" size=8 style="width:80px;"></select>
+                            
+                        </div>
+                    <div>
+                        <div class = "chart-c" id="chart-container-two"></div>
+                    </div>        
+                </div>
+            </div>
+
+            <div class = "box-four">
+        
+                <div class = "subtitle">Model Selection</div>
+                <div class = "note">Note: Please choose the variables to be included in the model. </br>Select it and click "<<" to move it to the left box. AI would give you advice based on your selection, and please submit your final choice eventually. </div>
+                <div class="container">
+                    <div class="model_left">
+                        <select id="leftValues" size="5" multiple></select>
+                    </div>
+                    <div class="arrow">
+                        <input type="button" id="btnLeft" value="&lt;&lt;" />
+                        <input type="button" id="btnRight" value="&gt;&gt;" />
+                    </div>
+                    <div class="model_right">
+                        <select id="rightValues" size="4" multiple></select>
+                    </div>
+                </div>
+
+
+                <form action="/mme_web_user_study/modeling_test_after/index.html">
+                    <input class = "submitbutton" type="submit" value="Submit" />
+                </form>
+            </div>
+        </div>
+           
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="script.js"></script>
+    </body>
+</html>

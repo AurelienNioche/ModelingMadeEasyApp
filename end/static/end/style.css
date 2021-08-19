@@ -1,0 +1,51 @@
+.grid-parent{
+    display: grid;
+    grid-template-rows: 35px auto auto;
+    gap: 1px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 1px;
+    background: rgb(199, 198, 198);
+}
+
+.title{
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:linen;
+    padding: 5px;
+    gap: 5px;
+    font-size: 18px;
+}
+
+
+.box-one {
+    background-color: white;
+}
+
+.Demo_questionnaire{
+    margin-top: 30px;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-bottom: 30px;
+}
+.submitbtn{
+    margin-top: 30px;
+    width: 100px;
+}
+
+.survey_text{
+    width:80%;
+    height: 30%;
+}
+
+.note {
+    background-color: white;
+}
+
+.m_note{
+    margin-left: 10%;
+    margin-right: 10%;
+}

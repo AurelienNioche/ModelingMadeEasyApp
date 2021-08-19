@@ -31,7 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'consent_form.apps.ConsentFormConfig',
+    'end.apps.EndConfig',
+    'exp_tutorial.apps.ExpTutorialConfig',
+    'mme_intro.apps.MmeIntroConfig',
+    'modeling_test.apps.ModelingTestConfig',
+    'modeling_test_after.apps.ModelingTestAfterConfig',
+    'pre_questionnaire.apps.PreQuestionnaireConfig',
+    'survey.apps.SurveyConfig',
     'group0.apps.Group0Config',
+    'group1.apps.Group1Config',
+    'group2.apps.Group2Config',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
