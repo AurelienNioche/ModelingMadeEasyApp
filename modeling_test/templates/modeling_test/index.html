@@ -1,11 +1,11 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <link rel= "stylesheet" href="{%  static 'modeling_test/style.css' %}">
-        <link rel="shortcut icon" href="#">
-        <title>MME User Study</title>
+        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+        <title>Aalto Experiment</title>
         <style>
         </style>
         
@@ -38,44 +38,14 @@
                     Please also specify the reason for your choice. <br>
                     (Could select one or multiple choices) <br>
                 </p>
-                
-{#                <!-- <form class = "form" action="/mme_web_user_study/group1/index.html"> -->#}
-{#                <form class = "form" id="form_only">    #}
-{#                    <!-- <label for="age">3. What is your age?</label><br> -->#}
-{##}
-{#                    <input type="checkbox" id="aa" name="test_selection" value="A">#}
-{#                    <label for="aa">A. y = a1x1 + b </label><br>#}
-{#                    <input type="checkbox" id="bb" name="test_selection" value="B">#}
-{#                    <label for="bb">B. y = a2x2 + b </label><br>#}
-{#                    <input type="checkbox" id="cc" name="test_selection" value="C">#}
-{#                    <label for="cc">C. y = a3x3 + b </label><br>#}
-{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
-{#                    <label for="dd">D. y = a1x1 + a2x2 + b </label><br>#}
-{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
-{#                    <label for="dd">E. y = a1x1 + a3x3 + b  </label><br>#}
-{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
-{#                    <label for="dd">F. y = a2x2 + a3x3 + b  </label><br>#}
-{#                    <input type="checkbox" id="dd" name="test_selection" value="D">#}
-{#                    <label for="dd">G. y = a1x1 + a2x2 + a3x3 + b  </label><br>#}
-{#                    #}
-{#                </br>#}
-{#                    <label for="reason">Reason:</label><br>#}
-{#                    <textarea class = "reason_text" name="test_reason" rows="2" cols="50"></textarea><br>#}
-{##}
-{#                    <input class = "submitbtn" type="submit" value="Next">#}
-{#                    #}
-{#                </form> #}
-                <form action="{% url 'modeling_test_index' %}" method="post">
+
+                <form action="{% url 'modeling_test' %}" method="post">
                     {% csrf_token %}
                     {{ form }}
-                    <input type="submit" value="Submit">
+                    <p></p>
+                    <input type="submit" value="Next">
                 </form>
             </div>
         </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-{#<script>let condition={{ condition }}</script>#}
-{#<script src="{% static 'modeling_test/script.js' %}"></script>#}
 </body>
 </html>

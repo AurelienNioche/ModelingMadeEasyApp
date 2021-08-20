@@ -32,7 +32,7 @@
     margin-right: 10%;
 }
 
-.Demo_questionnaire{
+.questionnaire{
     margin-top: 30px;
     margin-left: 20%;
     margin-right: 20%;
@@ -41,4 +41,9 @@
 .submitbtn{
     margin-top: 30px;
     width: 100px;
+}
+
+.questionnaire ul {
+    padding: 0;
+    list-style: none;
 }

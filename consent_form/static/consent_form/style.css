@@ -25,12 +25,13 @@
     color: black;
 }
 
-.Consent_form{
+.consent-form{
     margin-top: 30px;
     margin-left: 20%;
     margin-right: 20%;
     margin-bottom: 30px;
 }
+
 .submitbtn{
     margin-top: 30px;
     width: 100px;
@@ -44,4 +45,9 @@
 }
 #date{
     width: 200px;
+}
+
+.consent-form ul {
+    padding: 0;
+    list-style: none;
 }

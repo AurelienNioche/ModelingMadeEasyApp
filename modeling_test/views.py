@@ -1,6 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.template import loader
 
 from .forms import Form
 
@@ -10,12 +8,6 @@ def select_condition():
     TODO: select the right group depending on...?
     """
     return 0
-
-
-# def index(request):
-#     template = loader.get_template('modeling_test/index.html')
-#     context = {}
-#     return HttpResponse(template.render(context, request))
 
 
 def index(request):

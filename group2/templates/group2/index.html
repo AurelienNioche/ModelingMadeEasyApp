@@ -1,9 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <link rel= "stylesheet" href="style.css">
-        <link rel="shortcut icon" href="#">
-        <title>CSS Position</title>
+        <link rel= "stylesheet" href="{%  static 'group2/style.css'%}">
+        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+        <title>Aalto Experiment</title>
         <style>
         </style>
         
@@ -26,7 +28,8 @@
                     <div class = "subtitle">Variable Exploration</div>
                     <div class = "note">This session is for exploring the variables.</div>
                     <div class = "content">
-                        <div class="vbar"><select class="selectbox" id="variable-one" size=8></select></div>
+                        <div class="vbar"><label
+                                for="variable-one"></label><select class="selectbox" id="variable-one" size=8></select></div>
                         <div class = "chart-c" id="chart-container"></div>
                     </div>
                 </div>
@@ -36,8 +39,10 @@
                     <div class = "subtitle">Variable Correlation Exploration</div>
                     <div class = "note">This session is for exploring the relationship between two variables.</div>
                     <div class = "content-three">
-                        <div class="vbar"><select class="selectbox" id="variable-two" size=8 style="width:80px;"></select></div>
-                        <div class="vbar"><select class="selectbox" id="variable-three" size=8 style="width:80px;"></select></div>
+                        <div class="vbar"><label
+                                for="variable-two"></label><select class="selectbox" id="variable-two" size=8 style="width:80px;"></select></div>
+                        <div class="vbar"><label
+                                for="variable-three"></label><select class="selectbox" id="variable-three" size=8 style="width:80px;"></select></div>
                         <div class = "chart-c" id="chart-container-two"></div>
                     </div>
                 </div>
@@ -47,7 +52,7 @@
                 
                 <div class="box-tutorial">
                     <div class = "subtitle">Turorial Material</div>
-                    <div class = "pdf_container"><embed src="../Full_Tutorial.pdf#toolbar=0" type="application/pdf" width="100%" height="100%"/></div>
+                    <div class = "pdf_container"><embed src="{% static 'group0/Full_Tutorial.pdf'%}#toolbar=0" type="application/pdf" width="100%" height="100%"/></div>
                 </div>
 
                 <div class = "box-AI">
@@ -62,14 +67,14 @@
                     <div class = "subtitle">Model Selection</div>
                     <div class = "note">
                         Please choose the variables to be included in the model by
-                        selecting it </br>  and clicking "<<" to move it to the left box. (">>" for unselecting)
-                        </br>AI would give you advice based on your selection, 
+                        selecting it <br>  and clicking "<<" to move it to the left box. (">>" for unselecting)
+                        <br>AI would give you advice based on your selection,
                         and please submit your final choice at last. </div>
                         
                     <div class="container">
                         <div class="model_left">
                             <p style="font-size:80%">Selected Variable</p>
-                            <select id="leftValues" size="5" multiple></select>
+                            <label for="leftValues"></label><select id="leftValues" size="5" multiple></select>
                         </div>
                         <div class="arrow">
                             <input type="button" id="btnLeft" value="&lt;&lt;" />
@@ -90,6 +95,6 @@
            
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-        <script src="script.js"></script>
+        <script src="{%  static 'group2/script.js' %}"></script>
     </body>
 </html>

@@ -1,9 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <link rel= "stylesheet" href="style.css">
-        <link rel="shortcut icon" href="#">
-        <title>CSS Position</title>
+        <link rel= "stylesheet" href="{%  static 'pre_questionnaire/style.css' %}">
+        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+        <title>Aalto Experiment</title>
         <style>
         </style>
         
@@ -11,71 +13,12 @@
     <body> 
       <div class="grid-parent">
         <div class = "title name">Demographic Info Questionnaire  </div>
-        <div class = "note">
-          <p class = "q_note">Note: The Participant ID and Condition are given by the mediator. Please enter the information correctly. </p></div>
         <div class = "box-one">
-          <form class = "Demo_questionnaire" action="/mme_web_user_study/modeling_test/index.html">
+          <form class = "questionnaire" action="{% url 'pre_questionnaire' %}" method="post">
+              {% csrf_token %}
+                    {{ form }}
+            <input class = "submitbtn" type="submit" value="Next">
 
-            <label for="id_number">1. Participant ID:</label><br>
-            <input type="text" id="id_number" name="id_number"><br>
-
-            <label for="condition">2. Condition:</label><br>
-
-            <input type="radio" id="condi_0" name="condition" value="0">
-            <label for="condi_0">0</label><br>
-            <input type="radio" id="condi_1" name="condition" value="1">
-            <label for="condi_1">1</label><br>
-            <input type="radio" id="condi_2" name="condition" value="2">
-            <label for="condi_2">2</label><br>
-            
-
-            <label for="gender">3. What gender do you identify as:</label><br>
-
-            <input type="radio" id="male" name="gender" value="A">
-            <label for="male">A. Male</label><br>
-            <input type="radio" id="female" name="gender" value="B">
-            <label for="female">B. Female</label><br>
-            <input type="radio" id="othergender" name="gender" value="C">
-            <label for="others">C. Others</label><br>
-
-            <label for="age">4. What is your age?</label><br>
-
-            <input type="radio" id="teen" name="age" value="A">
-            <label for="teen">A. 16-20</label><br>
-            <input type="radio" id="youth" name="age" value="B">
-            <label for="youth">B. 21-25</label><br>
-            <input type="radio" id="adult" name="age" value="C">
-            <label for="adult">C. 26-30</label><br>
-            <input type="radio" id="otherage" name="age" value="D">
-            <label for="otherage">D. Others</label><br>
-
-            <label for="degree">5. What is the highest degree or level of education you have completed?</label><br>
-
-            <input type="radio" id="highschool" name="degree" value="A">
-            <label for="highschool">A. High School</label><br>
-            <input type="radio" id="bachelor" name="degree" value="B">
-            <label for="bachelor">B. Bachelor's Degree</label><br>
-            <input type="radio" id="master" name="degree" value="C">
-            <label for="master">C. Master's Degree</label><br>
-            <input type="radio" id="others" name="degree" value="D">
-            <label for="others">D. Others</label><br>
-
-            <label for="degree">6. How well do you know about linear regression?</label><br>
-
-            <input type="radio" id="a" name="confidence" value="A">
-            <label for="a">A. Very well</label><br>
-            <input type="radio" id="b" name="confidence" value="B">
-            <label for="b">B. Basic understanding</label><br>
-            <input type="radio" id="c" name="confidence" value="C">
-            <label for="c">C. Only heard about it</label><br>
-            <input type="radio" id="d" name="confidence" value="D">
-            <label for="d">D. Never heard about it</label><br>
-
-            
-            <input class = "submitbtn"type="submit" value="Next">
-
-            <!-- Test git ssh key  -->
-            
           </form> 
         </div>
 </div>

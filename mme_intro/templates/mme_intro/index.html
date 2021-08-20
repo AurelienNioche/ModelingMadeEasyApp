@@ -1,9 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <link rel= "stylesheet" href="style.css">
-        <link rel="shortcut icon" href="#">
-        <title>CSS Position</title>
+        <link rel= "stylesheet" href="{% static 'mme_intro/style.css'%}">
+        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+        <title>Aalto Experiment</title>
         <style>
         </style>
         
@@ -12,7 +14,7 @@
       <div class="grid-parent">
         <div class = "title name">Modelling Made Easy User Study -- Brief Introduction</div>
         <div class = "box-one">
-          <form class = "Demo_questionnaire" action="/mme_web_user_study/consent_form/index.html">
+          <form class = "Demo_questionnaire" action="{% url 'consent_form' %}">
             <p>
               Topic of the research project: In this user study, we evaluate how an AI system 
               can provide educative assistance during linear regression modelling. </p>
@@ -94,7 +96,7 @@
             <p><b>
               If you agree to take part in the study, please sign the consent form on the next page.</b></p>
 
-            <input class = "submitbtn"type="submit" value="Next">
+            <input class = "submitbtn" type="submit" value="Next">
             
           </form> 
         </div>
