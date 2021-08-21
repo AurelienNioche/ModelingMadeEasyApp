@@ -1,0 +1,27 @@
+<div class = "box-model">
+
+    <div class = "subtitle">Model Selection</div>
+    <div class = "note">
+        Please choose the variables to be included in the model by
+        selecting it </br>  and clicking "<<" to move it to the left box. (">>" for unselecting) </div>
+    <div class="container">
+
+        <div class="model_left">
+            <p style="font-size:80%">Selected Variable</p>
+            <select id="leftValues" size="5" multiple></select>
+        </div>
+        <div class="arrow">
+            <input type="button" id="btnLeft" value="&lt;&lt;" />
+            <input type="button" id="btnRight" value="&gt;&gt;" />
+        </div>
+        <div class="model_right">
+            <p style="font-size:80%">Variable Pool</p>
+            <select id="rightValues" size="4" multiple></select>
+
+        </div>
+    </div>
+    <form action="{%  url 'group0' user_id=user_id group_id=group_id %}" method="post">
+    {% csrf_token %}
+    <input class = "submitbutton" type="submit" value="Submit" />
+    </form>
+</div>
