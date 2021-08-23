@@ -101,17 +101,22 @@
                     </div>
                 </div>
 
-                <form action="/mme_web_user_study/modeling_test_after/index.html">
-                    <input class = "submitbutton" type="submit" value="Submit" />
-                </form>
-                    
+            <form action="{%  url 'group1' user_id=user_id %}" method="post">
+                {% csrf_token %}
+                <input class = "submitbutton" type="submit" value="Submit" />
+            </form>
 
-                
             </div>
         </div>
            
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        {% csrf_token %}
+        <script>
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let url_log="{% url 'group1_validate' user_id=user_id %}";
+        </script>
+        <script>let data_file="{% static 'task/data.json'%}"</script>
         <script src="{% static 'group1/script.js'%}"></script>
     </body>
 </html>

@@ -1,26 +1,21 @@
+{% extends 'base.html' %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <link rel= "stylesheet" href="{%  static 'pre_questionnaire/style.css' %}">
-        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
-        <title>Aalto Experiment</title>
-        <style>
-        </style>
-        
-    </head>
-    <body> 
-      <div class="grid-parent">
-        <div class = "title name">Demographic Info Questionnaire  </div>
-        <div class = "box-one">
-          <form class = "questionnaire" action="{% url 'pre_questionnaire' %}" method="post">
-              {% csrf_token %}
-                    {{ form }}
-            <input class = "submitbtn" type="submit" value="Next">
+{% block extra_css %}
+    <link rel= "stylesheet" href="{%  static 'pre_questionnaire/style.css' %}">
+{%  endblock %}
 
-          </form> 
+{% block content_title %}
+    <div class = "title name">Demographic Info Questionnaire</div>
+{% endblock %}
+
+{%  block content %}
+    <div class = "box-one">
+          <form class = "questionnaire" action="{% url 'pre_questionnaire' user_id=user_id%}" method="post">
+              {% csrf_token %}
+              {{ form }}
+              <input class = "submitbtn" type="submit" value="Next">
+          </form>
         </div>
-</div>
-</body>
-</html>
+{%  endblock %}

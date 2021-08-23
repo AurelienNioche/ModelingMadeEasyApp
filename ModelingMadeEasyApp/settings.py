@@ -31,17 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'group0.apps.Group0Config',
+    'group1.apps.Group1Config',
+    'group2.apps.Group2Config',
     'consent_form.apps.ConsentFormConfig',
     'end.apps.EndConfig',
     'exp_tutorial.apps.ExpTutorialConfig',
     'mme_intro.apps.MmeIntroConfig',
     'modeling_test.apps.ModelingTestConfig',
-    'modeling_test_after.apps.ModelingTestAfterConfig',
     'pre_questionnaire.apps.PreQuestionnaireConfig',
     'survey.apps.SurveyConfig',
-    'group0.apps.Group0Config',
-    'group1.apps.Group1Config',
-    'group2.apps.Group2Config',
+    'task.apps.TaskConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -65,7 +65,7 @@ ROOT_URLCONF = 'ModelingMadeEasyApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,1 +1,21 @@
-{% extends 'template.html' %}
+{% extends 'base.html' %}
+
+{%  load static %}
+
+{% block content_title %}
+    <div class = "title name">Build the model</div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>let data_file="{% static 'task/data.json'%}"</script>
+    {% csrf_token %}
+    <script>
+    const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let url_log="{% url 'user_action' user_id=user_id group_id=group_id %}";
+    let group_id = {{ group_id }};
+    let init_rec_item = "{{ init_rec_item }}";
+    </script>
+    <script src="{% static 'task/script.js' %}"></script>
+{% endblock script %}

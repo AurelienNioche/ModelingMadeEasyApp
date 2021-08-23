@@ -1,19 +1,17 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
+{%  load static %}
+
+{% block extra_css %}
         <link rel= "stylesheet" href="{% static 'consent_form/style.css' %}">
-        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
-        <title>Aalto Experiment</title>
-        <style>
-        </style>
-        
-    </head>
-    <body> 
-      <div class="grid-parent">
+{% endblock %}
+
+{% block content_title %}
         <div class = "title name">Consent Form</div>
-        <div class = "box-one">
+{% endblock %}
+
+{% block content %}
+<div class = "box-one">
           <form class = "consent-form" action="{%  url 'consent_form' %}" method="post">
               {% csrf_token %}
             <p>
@@ -23,12 +21,12 @@
               I have read and understood the study information sheet given to me.
             </p>
             <p>
-              I have understood that the material and research data is gathered for scientific purposes only. 
-              The purpose and nature of the study has been explained to me in writing. I have sufficient 
+              I have understood that the material and research data is gathered for scientific purposes only.
+              The purpose and nature of the study has been explained to me in writing. I have sufficient
               information on the process of the study.
             </p>
             <p>
-              I understand that my participation in the study is completely voluntary and that I have the right 
+              I understand that my participation in the study is completely voluntary and that I have the right
               to discontinue my participation at any stage without any consequences.
             </p>
             <p>
@@ -38,30 +36,30 @@
               I understand that I can ask to take a break at any time during the study.
             </p>
             <p>
-              It has been explained to me that a designated researcher will, at my request, provide me with 
-              additional details of the general principles of the study and its progress or of the results 
+              It has been explained to me that a designated researcher will, at my request, provide me with
+              additional details of the general principles of the study and its progress or of the results
               concerning myself.
             </p>
             <p>
-              I understand that anonymity will be ensured by disguising my identity. I have been explained 
-              who are the different parties involved in the research that have access to my data. I understand 
+              I understand that anonymity will be ensured by disguising my identity. I have been explained
+              who are the different parties involved in the research that have access to my data. I understand
               the practices of storing, protecting, and using the data.
             </p>
             <p>
-              I know that the collected data will not be presented to a third party without my written consent. 
-              I know that the research group may ask for a professional consultation on possible unexpected 
-              incidental findings without separate consent provided that the anonymity of the results has been 
+              I know that the collected data will not be presented to a third party without my written consent.
+              I know that the research group may ask for a professional consultation on possible unexpected
+              incidental findings without separate consent provided that the anonymity of the results has been
               ensured. Any type of commercial exploitation of the results is prohibited.
             </p>
             <p>
-              I understand that a fully anonymized subset of the data may be released to other research groups 
+              I understand that a fully anonymized subset of the data may be released to other research groups
               for the purposes mentioned above, if I give permission to it.
             </p>
             <h3>
               Permission for reporting data extracts
             </h3>
 
-            <label for="permission1"> I understand that a fully anonymized subset of the data may be released to other research groups 
+            <label for="permission1"> I understand that a fully anonymized subset of the data may be released to other research groups
               for the purposes mentioned above, if I give permission to it.</label><br>
 
               {{ form.perm1 }}
@@ -71,7 +69,7 @@
               Permission for reporting interview quotes
             </h3>
 
-            <label for="permission2"> I understand that extracts from possible interviews may be quoted in subsequent publications 
+            <label for="permission2"> I understand that extracts from possible interviews may be quoted in subsequent publications
               if I give permission to it.</label><br>
 
             {{ form.perm2 }}
@@ -93,8 +91,9 @@
               {{ form.city }}<br>
 
             <input class = "submitbtn" type="submit" value="Next"><br>
-          </form> 
+          </form>
         </div>
-</div>
-</body>
-</html>
+{% endblock %}
+
+{% block script %}
+{% endblock script %}

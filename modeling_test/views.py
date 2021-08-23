@@ -1,31 +1,46 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from .forms import Form
+from .models import ModelingTest
 
 
-def select_condition():
-    """
-    TODO: select the right group depending on...?
-    """
-    return 0
+N_CONDITION = 3
 
 
-def index(request):
-    # if this is a POST request we need to process the form data
+def attribute_group():
+
+    n_users = ModelingTest.objects.values_list("user_id", flat=True).distinct().count()
+    group_id = (n_users - 1) % N_CONDITION  # -1: ignore current user
+    return group_id
+
+
+def index(request, after=0, user_id="user_test"):
+
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = Form(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            condition = select_condition()
-            # return render(request, f'group{condition}/index.html', {})
-            return redirect(f'/group{condition}/')
+            print(f"user_id={user_id}; modeling_test={form.cleaned_data}")
 
-    # if a GET (or any other method) we'll create a blank form
+            mt = ModelingTest(
+                user_id=user_id,
+                is_after=bool(after),
+                test_selection=",".join(form.cleaned_data["test_selection"]),
+                test_reason=form.cleaned_data["test_reason"])
+            mt.save()
+
+            if after:
+                return redirect(reverse('survey', kwargs={'user_id': user_id}))
+            else:
+                group_id = attribute_group()
+                print(f"user_id={user_id}; group_id={group_id}")
+
+                return redirect(reverse('task', kwargs={'user_id': user_id,
+                                                        'group_id': group_id}))
+
     else:
         form = Form()
 
-    return render(request, 'modeling_test/index.html', {'form': form})
+    return render(request, 'modeling_test/index.html', {'form': form,
+                                                        'user_id': user_id,
+                                                        'after': after})

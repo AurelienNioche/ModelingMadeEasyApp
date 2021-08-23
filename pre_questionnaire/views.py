@@ -1,23 +1,28 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, reverse, redirect
 
 from .forms import Form
+from .models import PreQuestionnaire
 
 
-def index(request):
-    # if this is a POST request we need to process the form data
+def index(request, user_id="user_test"):
+
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = Form(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            # return render(request, f'group{condition}/index.html', {})
-            return redirect('/modeling_test/')
+            print(f"user_id={user_id}; survey={form.cleaned_data}")
+            pq = PreQuestionnaire(
+                user_id=user_id,
+                gender=form.cleaned_data["gender"],
+                age=form.cleaned_data["age"],
+                education=form.cleaned_data["education"],
+                confidence=form.cleaned_data["confidence"])
+            pq.save()
+            return redirect(reverse('modeling_test',
+                                    kwargs={'after': 0,
+                                            'user_id': user_id}))
 
-    # if a GET (or any other method) we'll create a blank form
     else:
         form = Form()
 
-    return render(request, 'pre_questionnaire/index.html', {'form': form})
+    return render(request, 'pre_questionnaire/index.html', {'form': form,
+                                                            'user_id': user_id})

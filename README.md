@@ -6,4 +6,20 @@ Flow:
 * `consent_form`,
 * `pre_questionnaire`,
 * `modeling_test`,
-* `group0` or `group1` or `group2`
+* `task`,
+* `modeling_test`,
+* `survey`,
+* `end`
+
+Create admin account:
+    
+    $ python manage.py createsuperuser
+
+Admin url:
+
+    <site_url>/admin/
+
+
+Erase DB content:
+
+    python manage.py flush

@@ -20,7 +20,7 @@ class Form(forms.Form):
         required=True,
         choices=[
             ("male", "A. Male"),
-            ("female", "B.Female"),
+            ("female", "B. Female"),
             ("other", "C. Other")
         ]
     )

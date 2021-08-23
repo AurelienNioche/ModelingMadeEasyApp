@@ -202,7 +202,7 @@ function populate_select_options(vars, selectbox_id) {
 
 //document.querySelector('#trybuttontwo').style.visibility="hidden";
 
-fetch("./data.json")
+fetch(data_file)
     .then(response => response.json())
     .then(data=>{
 		// Read data
@@ -210,29 +210,36 @@ fetch("./data.json")
 		const labels = Object.keys(data);
 		const X_labels = labels.slice(0,-1);
 		Y_label = labels[labels.length - 1];
-		
-		
+
+
 		// Populate select options
-		
+
 		populate_select_options(X_labels, "#rightValues");
 		populate_select_options(X_labels, "#variable-one");
 		populate_select_options(X_labels, "#variable-two");
 		populate_select_options(X_labels, "#variable-three");
-		
+
 		// Plot graphs
 		visualizeVar(labels[0]);
 		visualize2vars(labels[0], labels[0]);
-		
-		
+
+
 		// Select variables in list boxes
 		document.getElementById("variable-one").value = labels[0];
 		document.getElementById("variable-two").value = labels[0];
 		document.getElementById("variable-three").value = labels[0];
-		
-		
+
+
 		// Get recommendation
-		// getRecommendation(); // TODO: to remove?
-		document.querySelector('#trybuttontwo').style.visibility="hidden";
-		
+		getRecommendation(); // TODO: to remove?
+
+
+		/*
+        const myData = generateDataPairFromX(allData.X1, allData.Y);
+        const myChart = createChart(myData, 'chart-container', 'X1', 'Y');
+        const myDataTwo = generateDataPairFromX(allData.X1, allData.X1);
+        const myChartTwo = createChart(myDataTwo, 'chart-container-two','X1', 'X1');
+		*/
     });
+
 

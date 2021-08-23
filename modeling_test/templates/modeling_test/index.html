@@ -1,51 +1,54 @@
+{% extends 'base.html' %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <link rel= "stylesheet" href="{%  static 'modeling_test/style.css' %}">
-        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
-        <title>Aalto Experiment</title>
-        <style>
-        </style>
-        
-    </head>
-    <body>  
-        <div class="grid-parent">
-            <div class = "title name"> Modelling Test</div>
+{% block extra_css %}
+    <link rel= "stylesheet" href="{%  static 'modeling_test/style.css' %}">
+{%  endblock %}
 
-            <div class = "note">
-                <p class = "m_note">This modelling test is for understanding your background on Linear Regression Modelling 
-                    and for assessing our teaching tool.<br> It is okay to make mistakes. Please don't be stressed and
-                    just choose your ideal options. And please don't come back to this page to change your answer. 
-                    We will come to the same test again later.</p></div>
-            
-            <div class = "box-one">
-                <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHeight.png' %}" alt="Points VS Height"></div>
-                <div><img class ="scatter_image" src="{%  static 'modeling_test/PVWeight.png' %}" alt="Points VS Weight"></div>
-                <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHair.png' %}" alt="Points VS Hair length"></div>
-                <div><img class ="scatter_image" src="{%  static 'modeling_test/WVH.png' %}" alt="Weight VS Height"></div>
-            </div>
+{% block content_title %}
+    <div class = "title name"> Modelling Test</div>
+{% endblock %}
 
-            <div class = "box-two">
-                <p>A basketball coach is selecting players. 
-                    The relationship between <br>
-                    players height (x1) and points they gain (y), <br>
-                    players' weight (x2) and game points (y),<br>
-                    players' hair length (x3) and game points (y),<br>
-                    players' height(x1) and weight (x2) are shown in the pictures on the right.<br>
-                    Which of the following model would you like to choose? <br>
-                    Please also specify the reason for your choice. <br>
-                    (Could select one or multiple choices) <br>
-                </p>
+{%  block content %}
+<div class = "note"><p class = "m_note">
+        {% if after %}
+            This is the same modelling test as before. Based on what you have learnt, please update your answer.
+        {%  else %}
+        This modelling test is for understanding your background on Linear Regression Modelling
+            and for assessing our teaching tool.<br> It is okay to make mistakes. Please don't be stressed and
+            just choose your ideal options. And please don't come back to this page to change your answer.
+            We will come to the same test again later.
+        {% endif %}
+    </p>
+</div>
+<div class = "box-one">
+    <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHeight.png' %}" alt="Points VS Height"></div>
+    <div><img class ="scatter_image" src="{%  static 'modeling_test/PVWeight.png' %}" alt="Points VS Weight"></div>
+    <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHair.png' %}" alt="Points VS Hair length"></div>
+    <div><img class ="scatter_image" src="{%  static 'modeling_test/WVH.png' %}" alt="Weight VS Height"></div>
+</div>
 
-                <form action="{% url 'modeling_test' %}" method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <p></p>
-                    <input type="submit" value="Next">
-                </form>
-            </div>
-        </div>
-</body>
-</html>
+<div class = "box-two">
+    <p>A basketball coach is selecting players.
+        The relationship between
+    </p>
+    <ul>
+    <li>players height (x1) and points they gain (y), <br>
+         <li>players' weight (x2) and game points (y),<br>
+         <li>players' hair length (x3) and game points (y),<br>
+         <li>players' height(x1) and weight (x2)
+    </ul>
+        are shown in the pictures on the right.<br>
+        Which of the following model would you like to choose? <br>
+        Please also specify the reason for your choice. <br>
+        (Could select one or multiple choices) <br>
+
+    <form class="questionnaire" action="{% url 'modeling_test' user_id=user_id after=after%}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <p></p>
+        <input type="submit" value="Next">
+    </form>
+</div>
+{%  endblock %}

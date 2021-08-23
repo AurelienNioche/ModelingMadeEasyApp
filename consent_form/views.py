@@ -1,21 +1,25 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
+import uuid
+
 from . forms import Form
+from .models import ConsentForm
 
 
 def index(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = Form(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            # return render(request, f'group{condition}/index.html', {})
-            return redirect('/pre_questionnaire/')
-
-    # if a GET (or any other method) we'll create a blank form
+            user_id = uuid.uuid4()
+            print(f"user_id={user_id}; survey={form.cleaned_data}")
+            cf = ConsentForm(user_id=user_id,
+                             username=form.cleaned_data["username"],
+                             perm1=form.cleaned_data["perm1"],
+                             perm2=form.cleaned_data["perm2"],
+                             date=form.cleaned_data["date"],
+                             city=form.cleaned_data["city"])
+            cf.save()
+            return redirect(reverse('pre_questionnaire',
+                                    kwargs={'user_id': user_id}))
     else:
         form = Form()
 

@@ -12,73 +12,73 @@ function getRecommendation() {
 	// TODO: Get real reco
     const random_number = Math.floor(Math.random() * 8)+1;
     const random_value = "X".concat(random_number.toString());
+    // $("#recommendataion").innerHTML = "Variable review recommendation: ".concat(random_value);
+    // console.log(":_")
     visualizeReco(random_value);
 }
 
 
 
-// click submit to go to modeling_test_after
+    // click submit to go to modeling_test_after
 
-$(".submitbutton").click(function(){
+    $(".submitbutton").click(function(){
 
-    const values = [];
-    $("#leftValues option").each(function()
-    {
-        // Add $(this).val() to your list
-        values.push($(this).val());
+        const values = [];
+        $("#leftValues option").each(function()
+        {
+            // Add $(this).val() to your list
+            values.push($(this).val());
+        });
+        alert("Submitted: " + values.join(', '));
+    })
+
+
+    $("#btnLeft").click(function () {
+        var selectedItem = $("#rightValues option:selected");
+        $("#leftValues").append(selectedItem);
+
+		sendInfoToServer("add", selectedItem.val());
+		// $("#note_test").innerHTML = "Variable review recommendation: "
+		getRecommendation(); // TODO: to remove?
+        // $("#recommendataion").innerHTML = "Variable review recommendation: ";
     });
-    alert("Submitted: " + values.join(', '));
-})
-
-
-$("#btnLeft").click(function () {
-    var selectedItem = $("#rightValues option:selected");
-    $("#leftValues").append(selectedItem);
-
-    sendInfoToServer("add", selectedItem.val());
-
-    getRecommendation(); // TODO: to remove?
-
-    document.querySelector('#trybuttontwo').style.visibility="visible";
-});
-
-
-$("#btnRight").click(function () {
-    var selectedItem = $("#leftValues option:selected");
-    $("#rightValues").append(selectedItem);
-
-    sendInfoToServer("remove", selectedItem.val());
-
-    getRecommendation(); // TODO: to remove?
-});
 
 
 
-let m1,m2,n=[],
-    mainObj = {};
+    $("#btnRight").click(function () {
+        var selectedItem = $("#leftValues option:selected");
+        $("#rightValues").append(selectedItem);
 
-let datapairxy =[];
-let datapairxx =[];
+		sendInfoToServer("remove", selectedItem.val());
+		// $("#recommendataion").innerHTML = "Variable review recommendation: "
+		getRecommendation(); // TODO: to remove?
+    });
 
-let allData;
 
-let Y_label;
 
+    let m1,m2,n=[],
+        mainObj = {};
+
+    let datapairxy =[];
+    let datapairxx =[];
+
+    let allData;
+	let Y_label;
 
 
 /*    PLOT GENERATION    */
 
 
-function generateDataPairFromX(x, y){
-    const data = [];
-    for (var i=0; i<x.length;i++){
-        data.push({
-            x: x[i],
-            y: y[i]
-        })
-    }
-    return data;
-};
+    function generateDataPairFromX(x, y){
+        const data = [];
+        for (var i=0; i<x.length;i++){
+            data.push({
+                x: x[i],
+                y: y[i]
+            })
+        }
+        return data;
+    };
 
 function createChart(data, containerId, xID, yID){
     var container = document.getElementById(containerId);
@@ -87,7 +87,7 @@ function createChart(data, containerId, xID, yID){
     container.appendChild(canvas);
     return new Chart(canvas, {
         type: 'scatter',
-        data: {     
+        data: {
             datasets: [{
                 label: 'Dataset',
                 data: data,
@@ -109,7 +109,7 @@ function createChart(data, containerId, xID, yID){
                     }
                 }]
             }
-        }   
+        }
     });
 }
 
@@ -132,28 +132,26 @@ function visualize2vars(userSelectedXleft, userSelectedXbottom) {
 }
 
 function visualizeReco(rec_item) {
-    document.getElementById("recommendation").innerHTML = "Variable review recommendation: ".concat(rec_item);
-    console.log("Variable review recommendation: ".concat(rec_item));
+	$("recommendataion").innerHTML = "Variable review recommendation: ".concat(rec_item);
 	const myDataAI = generateDataPairFromX(allData[rec_item], allData[Y_label]);
 	const myChartAI = createChart(myDataAI, 'chart-container-AI', rec_item, Y_label);
 	console.log('ready :)');
-	
+
 	//$('#trybuttontwo').style.visibility="visible";
 	$("#trybuttontwo").click(function(){
 		visualizeVar(rec_item);
 		visualize2vars(rec_item, rec_item);
 		sendInfoToServer("accept", rec_item);
-		
+
 		document.getElementById("variable-one").value = rec_item;
 		document.getElementById("variable-two").value = rec_item;
 		document.getElementById("variable-three").value = rec_item;
-		
+
 		getRecommendation();
 		console.log('ready :)');
 		console.log(rec_item);
 	})
 }
-
 
 
 
@@ -164,14 +162,16 @@ $('select#variable-one').click(function(){
 });
 
 
+
 /*    DATA VISUALIZATION EVENTS    */
+
 
 
 $("select#variable-two").click(function(){
 	const userSelectedXleft = document.getElementById("variable-two").value;
     const userSelectedXbottom = document.getElementById("variable-three").value;
     visualize2vars(userSelectedXleft, userSelectedXbottom);
-}); 
+});
 
 $('select#variable-three').click(function(){
 	const userSelectedXleft = document.getElementById("variable-two").value;
@@ -191,6 +191,10 @@ function populate_select_options(vars, selectbox_id) {
 	   opt.innerHTML = vars[i];
 
 	   $(selectbox_id).append(opt);
+	   //$("#variable-one").append(opt);
+	   //$("#variable-two").append(opt);
+	   //$("#variable-three").append(opt);
+
 	}
 }
 
@@ -241,5 +245,4 @@ fetch(data_file)
         const myChartTwo = createChart(myDataTwo, 'chart-container-two','X1', 'X1');
 		*/
     });
-
 

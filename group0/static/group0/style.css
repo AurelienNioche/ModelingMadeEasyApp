@@ -1,27 +1,18 @@
 .grid-parent{
     display: grid;
-    grid-template-rows: 35px auto 330px auto;
+    grid-template-columns: 5.5fr 4.5fr;
+    grid-template-rows: 35px auto 330px 330px;
     gap: 1px;
     width: 90%;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
-    /* padding: 1px; */
     padding: 1px;
-    background-color: rgb(228, 225, 226);
+    background: rgb(199, 198, 198);
 }
 
-.top{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-}
-.bottom{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1px;
-}
+
 
 .title{
     text-align: center;
@@ -31,46 +22,30 @@
     background-color:linen;
     padding: 5px;
     gap: 5px;
+    grid-column: span 2;
 }
-
 
 .title_note{
     background-color: white;
-
+    grid-column: span 2;
 }
+
 .t_note{
     margin-left: 10%;
     margin-right: 10%;
 }
 
-.box-var{
+.box-var {
     background-color: white;
     text-align: center;
     display: grid;
-    grid-template-rows: 30px 30px auto;
-    gap: 5px;
-}
-
-/*new*/
-.box-var-c{
-    background-color: white;
-    text-align: center;
-    display: grid;
-    grid-template-rows: 30px 30px auto;
-    gap: 5px;
-}
-
-/*new*/
-.content-var-c{
-    display: grid;
-    grid-template-columns: 1fr 1fr 3fr;
+    grid-template-rows: 30px auto auto;
     gap: 5px;
 }
 
 .content{
     display: grid;
-    grid-template-columns: 4fr 6fr;
-    gap: 5px;
+    grid-template-columns: 2fr 3fr;
 }
 
 .vbar{
@@ -79,71 +54,60 @@
     gap: 5px;
 }
 
-.button-ai{
-    height: 20px;
-    width: 90px;
-    border-radius: 5px;
-    margin: auto;
-}
-
-
-.box-ai{
+.box-tutorial {
     background-color: white;
     text-align: center;
     display: grid;
-    grid-template-rows: 30px auto 30px auto auto ;
+    grid-template-rows: 30px 30px auto ;
     gap: 5px;
 }
 
-.title-ai{
-    color: tomato;
-    padding: 5px;
-    background-color: linen;
-}
 
-.v{
+.v {
     width: 300px;
     height:12px;
     margin: 5px auto;
-    background-color:#fcf2d9;
+    background-color:#00bfb6;
     padding: 10px;
     text-align: center;
-    color: black;
+    color: #fff;
     position: relative;
   }
 
-.vv:before{
+  .vv:before {
     content: "";
     width: 0px;
     height: 0px;
     position: absolute;
     border-left: 10px solid transparent;
-    border-right: 10px solid #fcf2d9;
-    border-top: 10px solid #fcf2d9;
+    border-right: 10px solid #00bfb6;
+    border-top: 10px solid #00bfb6;
     border-bottom: 10px solid transparent;
     left: -19px;
     top: 6px;
-    }
+  }
 
-
-
-.box-tutorial{
+.box-var_c {
     background-color: white;
-    color: black;
     text-align: center;
     display: grid;
-    grid-template-rows: 30px auto;
+    grid-template-rows: 30px auto auto;
+    gap: 5px;
+}
+
+.content-var_c{
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr;
     gap: 5px;
 }
 
 
-.box-model{
+.box-model {
     background-color: white;
-    color: black;
     text-align: center;
     display: grid;
     grid-template-rows: 30px auto auto auto;
-    gap: 10px;
+    gap: 5px;
 }
 
 .subtitle{
@@ -153,59 +117,61 @@
 }
 
 
-SELECT, INPUT[type="text"]{
+SELECT, INPUT[type="text"] {
     width: 100px;
     height: 150px;
     box-sizing: border-box;
 }
 /* It controls every selection box. */
 
-SECTION{
+SECTION {
     padding: 8px;
     background-color: #f0f0f0;
     overflow: auto;
 }
-SECTION > DIV{
+SECTION > DIV {
     float: left;
     padding: 4px;
 }
-SECTION > DIV + DIV{
+SECTION > DIV + DIV {
     width: 40px;
     text-align: center;
 }
 
-.button-submit{
+.submitbutton{
     background-color: tomato;
+    /* border-radius: 5px; */
     width: 100px;
+    /* grid-column: span 2; */
 }
 
 .chart-c{
-    width: 400px;
+    width: 90%;
     margin: auto;
 }
 
 
-#chart-container-ai{
-    width: 90%;
+#chart-container-AI{
+    width: 330px;
 }
 
 
 .container{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    margin-top: auto;
-    margin-bottom: auto;
-    background-color: #fcf2d9;
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+    background-color: rgba(202, 202, 202, 0.253);
 }
 
 .model_left{
-    margin-top: auto;
-    margin-bottom: auto;
+    /* margin-top: auto;
+    margin-bottom: auto; */
     margin-left: 50%;
 }
 .model_right{
-    margin-top: auto;
-    margin-bottom: auto;
+    /* margin-top: auto;
+    margin-bottom: auto; */
     margin-right: 50%;
 }
 .arrow{

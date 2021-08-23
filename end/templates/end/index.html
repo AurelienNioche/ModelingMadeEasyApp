@@ -1,27 +1,21 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{%  load static %}
+
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'end/style.css' %}">
-    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
-    <title>Aalto Experiment</title>
-    <style>
-    </style>
-    
-  </head>
-  <body> 
-    <div class="grid-parent">
+{% endblock %}
+
+{% block content_title %}
       <div class="title name">The End</div>
-      <div class="note">
+{% endblock %}
+
+{% block content %}
+    <div class="note">
         <p class="m_note">Thanks for your participation! Now the experiment is finished.    </p>
-      </div>
-
     </div>
+{% endblock %}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="{% static 'end/script.js' %}"></script>
+{% block script %}
+{% endblock script %}
 
-  </body>
-</html>

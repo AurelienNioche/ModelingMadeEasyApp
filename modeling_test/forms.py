@@ -1,16 +1,6 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
-CHOICES = [
-    ("aa", "A. y = a1x1 + b "),
-    ("bb", "B. y = a2x2 + b "),
-    ("cc", "C. y = a3x3 + b "),
-    ("dd", "D. y = a1x1 + a2x2 + b "),
-    ("ee", "E. y = a1x1 + a3x3 + b "),
-    ("ff", "F. y = a2x2 + a3x3 + b "),
-    ("gg", "G. y = a1x1 + a2x2 + a3x3 + b ")
-]
-
 
 class Form(forms.Form):
 
@@ -18,9 +8,19 @@ class Form(forms.Form):
         label="",
         required=True,
         widget=forms.CheckboxSelectMultiple,
-        choices=CHOICES)
+        choices=[("A", "A. y = a1x1 + b "),
+                 ("B", "B. y = a2x2 + b "),
+                 ("C", "C. y = a3x3 + b "),
+                 ("D", "D. y = a1x1 + a2x2 + b "),
+                 ("E", "E. y = a1x1 + a3x3 + b "),
+                 ("F", "F. y = a2x2 + a3x3 + b "),
+                 ("G", "G. y = a1x1 + a2x2 + a3x3 + b ")
+        ])
     test_reason = forms.CharField(
-        widget=forms.Textarea,
-        label=mark_safe("Reason: <br/>"),
-        label_suffix="",
+        widget=forms.Textarea(
+            attrs={'class': 'reason_text',
+                   'rows': 2,
+                   'cols': 50}),
+        label='Reason',
+        label_suffix=mark_safe(':<br>'),
         required=True)

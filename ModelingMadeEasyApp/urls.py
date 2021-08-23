@@ -21,6 +21,7 @@ from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('', include('mme_intro.urls')),
+    path('task/', include('task.urls')),
     path('group0/', include('group0.urls')),
     path('group1/', include('group1.urls')),
     path('group2/', include('group2.urls')),
@@ -28,9 +29,9 @@ urlpatterns = [
     path('end/', include('end.urls')),
     path('exp_tutorial/', include('exp_tutorial.urls')),
     path('modeling_test/', include('modeling_test.urls')),
-    path('modeling_test_after/', include('modeling_test_after.urls')),
     path('pre_questionnaire/', include('pre_questionnaire.urls')),
     path('survey/', include('survey.urls')),
     path('admin/', admin.site.urls),
-    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('images/favicon.ico')))
+    path('favicon.ico', RedirectView.as_view(
+        url=staticfiles_storage.url('images/favicon.ico')))
 ]
