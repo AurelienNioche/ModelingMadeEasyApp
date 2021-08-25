@@ -2,7 +2,7 @@
     <div class = "subtitle">Model Selection</div>
     <div class = "note">
         Please choose the variables to be included in the model by
-        selecting it <br>  and clicking "<<" to move it to the left box. (">>" for unselecting).<br>
+        selecting it and clicking "<<" to move it to the left box. (">>" for unselecting).
         {%  if group_id > 0 %}
             AI would give you advice based on your selection, and please submit your final choice at last.
         {%  endif %}
@@ -10,7 +10,7 @@
     <div class="container">
         <div class="model_left">
             <p style="font-size:80%">Selected Variable</p>
-            <label for="leftValues"></label><select id="leftValues" size="5" multiple></select>
+            <label for="leftValues"></label><select id="leftValues" size="5"></select>
         </div>
         <div class="arrow">
             <input type="button" id="btnLeft" value="&lt;&lt;" />
@@ -18,7 +18,7 @@
         </div>
         <div class="model_right">
             <p style="font-size:80%">Variable Pool</p>
-            <label for="rightValues"></label><select id="rightValues" size="4" multiple></select>
+            <label for="rightValues"></label><select id="rightValues" size="4"></select>
         </div>
     </div>
     <form action="{%  url 'task' user_id=user_id group_id=group_id %}" method="post">

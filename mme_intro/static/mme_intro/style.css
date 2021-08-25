@@ -25,6 +25,11 @@
     color: black;
 }
 
+p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 .Demo_questionnaire{
     margin-top: 30px;
     margin-left: 20%;

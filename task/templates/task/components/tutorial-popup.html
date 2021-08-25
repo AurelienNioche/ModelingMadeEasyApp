@@ -1,0 +1,13 @@
+{% load static %}
+<div class="form-popup" id="full-tutorial-popup">
+    <div class="form-container">
+    <h1>Extended tutorial</h1>
+
+    <div class = "pdf-container">
+        <embed src="{% static 'task/Full_Tutorial.pdf' %}#toolbar=0" type="application/pdf" width="100%" height="100%"/>
+    </div>
+
+{#    <button type="submit" class="btn">Login</button>#}
+    <button type="submit" class="btn cancel" onclick="closeFullTutorial()">Close</button>
+        </div>
+</div>

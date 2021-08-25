@@ -1,7 +1,18 @@
 <div class = "box-ai">
     <div class = "title-ai"><b>Assistance Advice</b></div>
     <div class = "note" id = "note_test">This session is for showing recommendations from AI.</div>
-    <p class = "v vv"><span id = "recommendation-text">Waiting for model selection...</span><span id="recommendation-value"></span></p>
-    <div class = "chart-c" id="chart-container-ai"></div>
-    <button class = "button-ai" id = "button-ai">Try it</button>
+    <div class = "ai-container-msg">
+        <span type="text" id = "recommendation-text"></span>
+        <span type="text" id="recommendation-value"></span><br>
+        <span type="text"  id="recommendation-text-after-value"></span>
+    </div>
+    {#    <div class = "chart-c" id="chart-container-ai"></div>#}
+    <div class="ai-container-btn-new" id="ai-container-btn-new">
+        <button class = "btn new" id="new">Yes, give me a suggestion!</button>
+    </div>
+    <div class="ai-container-btn-feedback" id="ai-container-btn-feedback">
+        <button class="btn no" id="refuse">No!</button>
+        <button class="btn yes" id="accept">Yes!</button>
+    </div>
+
 </div>
