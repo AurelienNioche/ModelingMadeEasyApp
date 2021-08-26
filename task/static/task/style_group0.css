@@ -1,7 +1,7 @@
 .grid-parent{
     display: grid;
     grid-template-columns: 5.5fr 4.5fr;
-    grid-template-rows: 35px auto 330px 330px;
+    grid-template-rows: 35px auto 330px 360px;
     gap: 1px;
     width: 90%;
     margin-left: auto;
@@ -12,7 +12,26 @@
     background: rgb(199, 198, 198);
 }
 
+.vis1-container {
+    background-color: white;
+    text-align: center;
+    display: grid;
+    grid-template-rows: 30px auto auto;
+    gap: 5px;
+}
 
+.vis2-container{
+    background-color: white;
+    text-align: center;
+    display: grid;
+    grid-template-rows: 30px auto auto;
+    gap: 5px;
+}
+
+.chart-c{
+    width: 400px;
+    margin: auto;
+}
 
 .title{
     text-align: center;
@@ -25,6 +44,11 @@
     grid-column: span 2;
 }
 
+.content{
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+}
+
 .title_note{
     background-color: white;
     grid-column: span 2;
@@ -33,19 +57,6 @@
 .t_note{
     margin-left: 10%;
     margin-right: 10%;
-}
-
-.vis1-container {
-    background-color: white;
-    text-align: center;
-    display: grid;
-    grid-template-rows: 30px auto auto;
-    gap: 5px;
-}
-
-.content{
-    display: grid;
-    grid-template-columns: 2fr 3fr;
 }
 
 .vbar{
@@ -138,17 +149,17 @@ SECTION > DIV + DIV {
     text-align: center;
 }
 
-.button-submit{
-    background-color: tomato;
-    /* border-radius: 5px; */
-    width: 100px;
-    /* grid-column: span 2; */
-}
+/*.button-submit{*/
+/*    background-color: tomato;*/
+/*    !* border-radius: 5px; *!*/
+/*    width: 100px;*/
+/*    !* grid-column: span 2; *!*/
+/*}*/
 
-.chart-c{
-    width: 90%;
-    margin: auto;
-}
+/*.chart-c{*/
+/*    width: 90%;*/
+/*    margin: auto;*/
+/*}*/
 
 
 .container{

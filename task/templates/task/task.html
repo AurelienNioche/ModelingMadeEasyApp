@@ -14,8 +14,9 @@
     <script>
     const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
     let url_log="{% url 'user_action' user_id=user_id group_id=group_id %}";
-    let group_id = {{ group_id }};
-    let init_rec_item = {{ init_rec_item }};
+    let group_id = {{ group_id | safe}};
     </script>
+    <script>let data = JSON.parse("{{ data | escapejs}}");</script>
+    <script>console.log(data);</script>
     <script src="{% static 'task/script.js' %}"></script>
 {% endblock script %}

@@ -1,13 +1,12 @@
 .grid-parent{
     display: grid;
-    grid-template-rows: 35px auto 330px 370px;
+    grid-template-rows: 35px auto 330px 390px;
     gap: 1px;
     width: 90%;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
-    /* padding: 1px; */
     padding: 1px;
     background-color: rgb(228, 225, 226);
 }
@@ -51,19 +50,11 @@
     gap: 5px;
 }
 
-/*new*/
 .vis2-container{
     background-color: white;
     text-align: center;
     display: grid;
     grid-template-rows: 30px 30px auto;
-    gap: 5px;
-}
-
-/*new*/
-.content-var-c{
-    display: grid;
-    grid-template-columns: 1fr 1fr 3fr;
     gap: 5px;
 }
 
@@ -137,11 +128,6 @@ SECTION > DIV{
 SECTION > DIV + DIV{
     width: 40px;
     text-align: center;
-}
-
-.button-submit{
-    background-color: tomato;
-    width: 100px;
 }
 
 .chart-c{
@@ -291,8 +277,8 @@ SECTION > DIV + DIV{
 
 
 .ai-container-msg{
-    width: 300px;
-    height:40%;
+    width: 75%;
+    height:35%;
     margin: 5px auto;
     background-color:#fcf2d9;
     padding: 5%;
@@ -307,10 +293,10 @@ SECTION > DIV + DIV{
     height: 0;
     position: absolute;
     border-left: 10px solid transparent;
-    border-right: 10px solid #fcf2d9;
+    border-right: 25px solid #fcf2d9;
     border-top: 10px solid #fcf2d9;
-    border-bottom: 10px solid transparent;
-    left: -19px;
+    border-bottom: 25px solid transparent;
+    left: -6%;
     top: 6px;
     }
 
@@ -324,6 +310,10 @@ SECTION > DIV + DIV{
   margin-bottom:2px;
   opacity: 0.8;
   height: auto;
+}
+
+.ai-container-btn-new .btn:hover {
+  opacity: 1;
 }
 
 .ai-container-btn-feedback .btn {
@@ -381,9 +371,6 @@ SECTION > DIV + DIV{
   height:100%;
 }
 
-.ai-popup-feedback-container-buttons {
-}
-
 .ai-popup-feedback .btn {
   display: inline-block;
   background-color: #04AA6D;
@@ -394,14 +381,14 @@ SECTION > DIV + DIV{
   height:10%;
 }
 
-.ai-popup-feedback-container .confirm {
+.ai-popup-feedback .confirm {
   background-color: red;
   float: right;
   width: 40%;
   border: none;
 }
 
-.ai-popup-feedback-container .cancel {
+.ai-popup-feedback .cancel {
   background-color: white;
   color: black;
   border: 2px solid #f1f1f1;

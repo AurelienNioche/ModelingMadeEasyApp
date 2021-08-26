@@ -2,7 +2,10 @@
 
 {%  load static %}
 
-{% block extra_css %}<link rel= "stylesheet" href="{% static 'task/style_group0.css' %}">{% endblock %}
+{% block extra_css %}
+    <link rel= "stylesheet" href="{% static 'task/style.css' %}">
+    <link rel= "stylesheet" href="{% static 'task/style_group0.css' %}">
+{% endblock %}
 
 {%  block content %}
     {%  include 'task/components/t-note.html' %}

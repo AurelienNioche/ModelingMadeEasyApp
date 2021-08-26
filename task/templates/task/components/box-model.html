@@ -1,6 +1,6 @@
-<div class = "box-model">
-    <div class = "subtitle">Model Selection</div>
-    <div class = "note">
+<div class="box-model">
+    <div class="subtitle">Model Selection</div>
+    <div class="note">
         Please choose the variables to be included in the model by
         selecting it and clicking "<<" to move it to the left box. (">>" for unselecting).
         {%  if group_id > 0 %}
@@ -21,8 +21,8 @@
             <label for="rightValues"></label><select id="rightValues" size="4"></select>
         </div>
     </div>
-    <form action="{%  url 'task' user_id=user_id group_id=group_id %}" method="post">
+    <form action="{%  url 'task' user_id=user_id group_id=group_id %}" method="post" id="submit-form">
     {% csrf_token %}
-    <input class = "button-submit" type="submit" value="Submit" />
+        <button class="button-submit" type="submit" id="button-submit" >Submit</button>
     </form>
 </div>
