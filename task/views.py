@@ -13,7 +13,7 @@ from .ai.planning.rollout_one_step_la import rollout_onestep_la
 from .ai.planning.no_educate_rollout_one_step_la import no_educate_rollout_one_step_la
 
 
-RANDOM_AI_SELECT = True
+RANDOM_AI_SELECT = False
 
 
 class Action:
@@ -42,11 +42,15 @@ class Action:
     @classmethod
     def trigger_feedback(cls):
         return [
-            cls.AI_ACCEPT, cls.AI_REFUSE, cls.AI_IGNORE, cls.AI_CLOSE_TUTORIAL
+            cls.AI_ACCEPT, cls.AI_REFUSE, cls.AI_IGNORE, cls.AI_CLOSE_TUTORIAL,
+            cls.ADD, cls.REMOVE
         ]
 
 
-def format_data(training_X, training_y):
+def format_data(dataset):
+
+    training_X, training_y, test_X, test_y, _, _ = dataset
+
     X = training_X.T.tolist()
     y = training_y.tolist()
     data = {}
@@ -72,8 +76,8 @@ def init(user_id, group_id):
     n_data_points = 100
     n_test_dataset = 10
 
-    n_collinear = 4  # difficulty[t][0]
-    n_noncollinear = 4  # difficulty[t][1]
+    n_collinear = 2 # difficulty[t][0]
+    n_noncollinear = 6  # difficulty[t][1]
 
     # FORGET ABOUT THESE ????
     W_typezero = (7.0, 0.0)
@@ -89,9 +93,7 @@ def init(user_id, group_id):
                                      n_collinear=n_collinear,
                                      n=n_data_points)
 
-    training_X, training_y, test_X, test_y, _, _ = training_dataset
-
-    data = format_data(training_X=training_X, training_y=training_y)
+    data = format_data(training_dataset)
 
     print("Creating and saving user data...")
     ud = UserData(user_id=user_id, group_id=group_id, value=data)
@@ -120,9 +122,8 @@ def init(user_id, group_id):
     print("creating ai assistant")
 
     ai = AiAssistant(
+        dataset=training_dataset,
         planning_function=planning_function,
-        training_X=training_X,
-        training_y=training_y,
         test_datasets=test_datasets,
         W_typezero=W_typezero,
         W_typeone=W_typeone,
@@ -131,8 +132,8 @@ def init(user_id, group_id):
         n_training_noncollinear=n_noncollinear,
         n_interactions=n_interactions,
         init_var_cost=init_cost,
-        init_educ_cost=init_last_cost,
-        user_model_file="task/ai/compiled_stan_model/mixture_model_w_ed.pkl")
+        init_edu_cost=init_last_cost,
+        stan_compiled_model_file="task/ai/stan_model/mixture_model_w_ed.pkl")
 
     print("creating and saving user model")
     um = UserModel(user_id=user_id, group_id=group_id, value=ai)
@@ -146,6 +147,17 @@ def unformat_included_vars(included_vars):
     included_vars = included_vars.split(",")
     included_vars = [int(x) - 1 for x in included_vars if len(x)]
     return included_vars
+
+
+def unformat_var(var):
+
+    if var == "educate":
+        return AiAssistant.EDUCATE
+
+    try:
+        return int(var.replace("X", "")) - 1
+    except ValueError:
+        return None
 
 
 def format_rec(rec_item, rec_item_cor):
@@ -174,7 +186,7 @@ def get_recommendation(user_id, included_vars):
 
         um = UserModel.objects.get(user_id=user_id)
         ai = um.value
-        rec_item, rec_item_cor = ai.get_recommendation(included_vars)
+        rec_item, rec_item_cor = ai.act(included_vars)
 
         print("saving object")
 
@@ -185,16 +197,19 @@ def get_recommendation(user_id, included_vars):
     return format_rec(rec_item, rec_item_cor)
 
 
-def user_feedback(user_id, action_type):
+def user_feedback(user_id, action_var, included_vars):
 
     if RANDOM_AI_SELECT:
         return
 
-    um = UserModel.objects.get(user_id=user_id)
+    action_var = unformat_var(action_var)
+    included_vars = unformat_included_vars(included_vars)
 
+    print(f"Giving AI feedback for action_var={action_var}, "
+          f"included_vars={included_vars}")
+    um = UserModel.objects.get(user_id=user_id)
     ai = um.value
-    outcome = int(action_type == Action.AI_ACCEPT)
-    ai.user_feedback(outcome)
+    ai.update(action_var, included_vars)
     um.value = ai
     um.save()
     print("I saved User Model")
@@ -223,7 +238,9 @@ def user_action(request, user_id, group_id):
 
     elif action_type in Action.trigger_feedback():
 
-        user_feedback(user_id=user_id, action_type=action_type)
+        user_feedback(user_id=user_id,
+                      action_var=action_var,
+                      included_vars=included_vars)
         rec_item, rec_item_cor = None, None
 
     else:
@@ -252,23 +269,13 @@ def user_action(request, user_id, group_id):
 def index(request, user_id='user_test', group_id=0):
 
     if request.method == 'POST':
-        return redirect(reverse(
-            'modeling_test',
-            kwargs={
-                'user_id': user_id,
-                'after': 1}))
-
-    # init_rec_item, init_rec_item_cor = 1, 1
+        return redirect(reverse('modeling_test',
+                                kwargs={
+                                    'user_id': user_id,
+                                    'after': 1}))
     data = init(
         user_id=user_id,
         group_id=group_id)
-    # if group_id == 0:
-    #     init_rec_item, init_rec_item_cor = 1, 1
-    # else:
-    #     init_rec_item, init_rec_item_cor = get_recommendation(
-    #         user_id=user_id,
-    #         group_id=group_id,
-    #         init=True)
 
     if group_id == 0:
         template_name = 'task/group0.html'

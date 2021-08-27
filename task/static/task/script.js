@@ -1,3 +1,5 @@
+let EDUCATE = "educate";
+
 let allData;
 let Y_label;
 
@@ -31,7 +33,7 @@ function sendInfoToServer(action_type, action_var=null) {
             alert("encountered error!");
         } else {
             if (data.rec_item === null) {}
-            else if (data.rec_item === "educate") {
+            else if (data.rec_item === EDUCATE) {
                 openFullTutorial();
             } else {
                 rec_item = data.rec_item;
@@ -168,7 +170,7 @@ function moveVarInModel(var_name="") {
 function AIaskUserForNewSuggestion() {
     $("#ai-container-btn-feedback").hide();
     $("#ai-container-btn-new").show();
-    AIupdateMessage("Would you like me to give you a suggestion?");
+    AIupdateMessage("Would like me to help you exploring the variables?");
 }
 
 function AIupdateMessage(message="", value="", after_value="") {
@@ -178,7 +180,6 @@ function AIupdateMessage(message="", value="", after_value="") {
 }
 
 function AIdisplayFeedback() {
-    $("#ai-container-btn-new").hide();
     $("#ai-container-btn-feedback").show();
 }
 
@@ -220,7 +221,7 @@ function getIncludedVariables() {
 }
 
 $('#leftValues').change(function(){
-    var value = $(this).val();
+    let value = $(this).val();
     console.log("select left " + value);
     if (aiIsWaiting()) {
         showAiPopupFeedback();
@@ -228,7 +229,7 @@ $('#leftValues').change(function(){
 })
 
 $('#rightValues').change(function(){
-    var value = $(this).val();
+    let value = $(this).val();
     console.log("select right " + value);
     if (aiIsWaiting()) {
         showAiPopupFeedback();
@@ -252,28 +253,51 @@ $("#confirm-ignore").click(function() {
     AIaskUserForNewSuggestion();
     pending_action = null;
     pending_value = null;
+    sendInfoToServer("ignore", rec_item);
 })
 
 $("#close-tutorial").click(function() {
     $("#full-tutorial-popup").hide();
     AIaskUserForNewSuggestion();
-    sendInfoToServer('close-tutorial');
+    sendInfoToServer('close-tutorial', EDUCATE);
 })
 
 $("#accept").click(function(){
     moveVarInModel(rec_item);
     AIaskUserForNewSuggestion();
-    sendInfoToServer("accept");
+    sendInfoToServer("accept", rec_item);
 })
 
 $("#refuse").click(function(){
     AIaskUserForNewSuggestion();
-    sendInfoToServer("refuse");
+    sendInfoToServer("refuse", rec_item);
 })
 
 $("#new").click(function(){
+    $("#ai-container-btn-new").hide();
     sendInfoToServer("new");
+    AIupdateMessage("Let me think...")
 })
+
+$("#btnLeft").click(function () {
+    if (aiIsWaiting()) {
+        showAiPopupFeedback();
+        return;
+    }
+    let selectedItem = $("#rightValues option:selected");
+    $("#leftValues").append(selectedItem);
+    sendInfoToServer("add", selectedItem.val());
+});
+
+$("#btnRight").click(function () {
+    if (aiIsWaiting()) {
+        showAiPopupFeedback();
+        return;
+    }
+    let selectedItem = $("#leftValues option:selected");
+    $("#rightValues").append(selectedItem);
+    sendInfoToServer("remove", selectedItem.val());
+});
 
 $('select#vis1-x').click(function(){
     let userSelectedX = $("#vis1-x").val()
@@ -316,26 +340,6 @@ $("#confirm-submit").click(function(){
 $("#cancel-submit").click(function() {
     $("#submit-popup").hide();
 })
-
-$("#btnLeft").click(function () {
-    if (aiIsWaiting()) {
-        showAiPopupFeedback();
-        return;
-    }
-    let selectedItem = $("#rightValues option:selected");
-    $("#leftValues").append(selectedItem);
-    sendInfoToServer("add", selectedItem.val());
-});
-
-$("#btnRight").click(function () {
-    if (aiIsWaiting()) {
-        showAiPopupFeedback();
-        return;
-    }
-    let selectedItem = $("#leftValues option:selected");
-    $("#rightValues").append(selectedItem);
-    sendInfoToServer("remove", selectedItem.val());
-});
 
 
 // Read data

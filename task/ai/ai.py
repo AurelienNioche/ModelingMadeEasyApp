@@ -1,85 +1,90 @@
-import os
 import numpy as np
 import torch
 import pandas
-import pystan
-import pickle
+
+from task.ai.stan_model import stan_model
 
 
 class AiAssistant:
 
     EDUCATE = -1
-    RECOMMEND = 1
 
-    def __init__(self,
-                 planning_function,
-                 training_X, training_y, test_datasets,
-                 W_typezero, W_typeone, educability,
-                 n_training_collinear,
-                 n_training_noncollinear,
-                 n_interactions,
-                 init_var_cost,
-                 init_educ_cost,
-                 user_model_file="mixture_model_w_ed.pkl"):
+    def __init__(
+            self,
+            dataset, planning_function,
+            test_datasets,
+            stan_compiled_model_file,
+            init_var_cost,
+            init_edu_cost,
+            W_typezero,
+            W_typeone,
+            educability,
+            n_interactions,
+            n_training_collinear,
+            n_training_noncollinear):
 
-        self.user_model_file = user_model_file
+        training_X, training_y, test_X, test_y, _, _ = dataset
 
-        self.educability = educability
-        self.n_interactions = n_interactions
-
+        self.corr_mat = np.abs(np.corrcoef(torch.transpose(
+            torch.cat((training_X, training_y.unsqueeze(dim=1)), dim=1), 0,
+            1)))
         self.n_covars = training_X.shape[1]
-        self.training_X = training_X
-        self.training_y = training_y
+        self.data_dict = {"N": 0, "x": [], "y": [], "beta": [W_typezero, W_typeone],
+                     "educability": educability,
+                     "forgetting": 0.0}
 
-        self.test_datasets = test_datasets
+        # cost[0,...,n_covars-1] is recommendation cost per covariate.
+        # cost[n_covars] is educate cost.
+        self.cost = torch.zeros(self.n_covars + 1) + init_var_cost
+        self.cost[-1] = init_edu_cost
 
+        self.prev_action = None
+
+        self.n_interactions = n_interactions
+        self.educability = educability
         self.n_training_collinear = n_training_collinear
         self.n_training_noncollinear = n_training_noncollinear
+        self.test_datasets = test_datasets
+        self.planning_function = planning_function
 
-        self.data_dict = {
-            "N": 0, "x": [], "y": [], "beta": [W_typezero, W_typeone],
-            "educability": educability,
-            "forgetting": 0.0}
+        self.stan_compiled_model_file = stan_compiled_model_file
 
-        # xi is n_covars + 1 because its size must match the corr_mat which includes the output y.
-        self.aux_data_dict = {"xi": torch.zeros(self.n_covars + 1, dtype=torch.bool)}
-
-        self.corr_mat = np.abs(np.corrcoef(torch.transpose(torch.cat((self.training_X, self.training_y.unsqueeze(dim=1)), dim=1), 0, 1)))
+        self.fit_summary = None
 
         self.i = 0
 
-        # cost[0,...,n_covars-1] is recommendation cost per covariate. cost[n_covars] is educate cost.
-        self.cost = torch.zeros(self.n_covars + 1) + init_var_cost
-        self.cost[-1] = init_educ_cost
+    def act(self, included_vars):
 
-        self.sample_user_model = None
-        self.prev_action = None
-        self.prev_max_cor = None
+        # Indices for grabbing the necessary statistics from Stan fit object
+        strt = 6 + (3 * self.i)
+        endn = strt + self.i
 
-        self.planning_function = planning_function
-
-    def get_recommendation(self, included_vars):
-
-        """
-        User model estimation part. Uses Certainty Equivalence to replace betas with their expectation, and posterior sampling to sample a user type.
-        """
-
-        # Special case for first action
         if self.i == 0:
-            # First action must be recommend for numerical purposes
-            is_var_rec = True
-            # Uniform choice of covariate
-            r_i = np.random.randint(self.n_covars)
+            is_rec_var = 1
+            r_i = np.random.choice(self.n_covars, 1).item()
 
         else:
+            betas_mean = list(self.fit_summary.iloc[2:6, 0])
+            betas_mean[1], betas_mean[2] = betas_mean[2], betas_mean[1]
+            # print(summary.iloc[[strt, endn], 0])
+            # E[\alpha_0] and E[\alpha_1], posterior expectations of type-0 and type-1 probabilities
+            type_probs_mean = list(self.fit_summary.iloc[[strt, endn], 0])
+            sample_user_type = np.random.choice(2, p=type_probs_mean)
+
+            sample_user_model = (
+                sample_user_type, betas_mean[0], betas_mean[1], betas_mean[2],
+                betas_mean[3], self.educability)
 
             # Returns educate OR recommend and if recommend,
             # recommended covar's index. IF not, r_i is None.
-            is_var_rec, r_i = self.planning_function(
-                self.n_covars,
-                self.aux_data_dict["xi"],
+            # xi is n_covars + 1 because its size must
+            # match the corr_mat which includes the output y.
+            aux_data_dict = torch.zeros(self.n_covars + 1, dtype=torch.bool)
+            aux_data_dict[included_vars] = 1
+            is_rec_var, r_i = self.planning_function(
+                self.n_covars, aux_data_dict,
                 self.corr_mat,
-                self.sample_user_model,
+                sample_user_model,
                 self.cost,
                 self.n_interactions - self.i + 1,
                 self.n_training_collinear,
@@ -87,193 +92,82 @@ class AiAssistant:
                 self.test_datasets,
                 prev_action=self.prev_action)
 
-        if is_var_rec:
-            # Action indices of recommend actions are the index of
-            # the recommended covariate \in {0,...,n_covars-1}
+        # if recommendation a variable
+        if is_rec_var:
             act_in = r_i
+            to_cor, _ = self.select_to_cor_and_get_max_cor(
+                act_in, included_vars)
 
-            rec_item_cor, max_cross_corr = self.select_var_to_cor(
-                act_in=act_in, included_vars=included_vars)
-
-            self.prev_action = r_i
-            self.prev_max_cor = max_cross_corr
-
+        # If *educate*
         else:
             act_in = AiAssistant.EDUCATE
-            rec_item_cor = None
-        print("AI reco", act_in, rec_item_cor)
-        return act_in, rec_item_cor
+            to_cor = None
 
-    def select_var_to_cor(self, act_in, included_vars):
+        return act_in, to_cor
 
-        if len(included_vars) == 0:
-            # by default, correlate with itself
-            return act_in, 0.0
+    def update(self, act_in, included_vars):
 
-        # Get the currently selected variables as boolean mask
-        mask = np.ones(len(included_vars))
-
-        # Set the recommended variable to False.
-        # Otherwise cross-correlations will include self-correlation.
-        mask[act_in] = False
-
-        # Get the cross-correlations between recommended var and included vars.
-        masked = np.arange(self.n_covars)[mask]
-        values = self.corr_mat[act_in, mask]
-        to_cor = masked[np.argmax(values)]
-        return to_cor, np.max(values)
-
-    def user_feedback(self, outcome: int = 0):
-
-        # If the chosen action was to recommend
-        if self.prev_action != AiAssistant.EDUCATE:
-            # Generate the action's observation vector for the user:
-            # (corr, cross_corr).
-            print("prev action", self.prev_action)
-            print("cor dim", self.corr_mat.shape)
-            print("cor", self.corr_mat[self.prev_action, -1])
-            print("prev_max_cor", self.prev_max_cor)
-            action = [self.corr_mat[self.prev_action, -1], self.prev_max_cor]
-
-        # This is an educate action!
-        else:
-            # Dummy action and outcome. Not used for anything.
+        # If that was an educate action
+        if act_in == AiAssistant.EDUCATE:
+            # The dummy action observation vector for educate actions.
+            # This is needed to ignore these in Stan.
             action = [-1.0, -1.0]
 
-        print("i", self.i)
-        print(action[0])
-        print(action[1])
+            # Dummy outcome. Not used for anything.
+            outcome = 0
 
-        # Add the observation to dataset.
-        # So this observations are like: (corr, cross_corr), outcome.
+        else:
+            _, max_cross_cor = self.select_to_cor_and_get_max_cor(
+                act_in, included_vars)
+
+            # Generate the action's observation vector for the user: (corr, cross_corr).
+            action = [self.corr_mat[act_in, -1], max_cross_cor]
+
+            # Logs the user's response time
+            outcome = int(act_in in included_vars)  # np.random.randint(2)
+
+            # we update prev_action only if not educate
+            self.prev_action = act_in
+
+        # Add the observation to dataset. So this observations are like: (corr, cross_corr), outcome.
         self.data_dict["x"].append(action)
         self.data_dict["y"].append(outcome)
 
+        # After the action execution, and observation of outcome,
+        # update our model of the user. The fit gives us the current model.
         self.data_dict["N"] += 1
-        self.fit_model_w_education(self.data_dict)
+        fit = stan_model.fit_model_w_education(
+            self.data_dict,
+            self.stan_compiled_model_file)
+
+        ### User model estimation part. Uses Certainty Equivalence to replace betas with their expectation, and posterior sampling to sample a user type.
+        s = fit.summary()
+        self.fit_summary = pandas.DataFrame(s['summary'],
+                                   columns=s['summary_colnames'],
+                                   index=s['summary_rownames'])
+
         self.i += 1
 
-    def fit_model_w_education(self, data):
-        """
-        data must be a dict containing --> N: number of datapoints, x: 2-d list of xs, y: 1-d list of ys, beta: 2-d list of weight vectors
-        If model_file is None, will compile. If not, use pre-compiled model from the file.
-        """
-        mixture_with_tseries_model = """
-        data {
-            int<lower=0> N; // number of total interactions
-            int<lower=0, upper=1> y[N]; // user responses
-            row_vector[2] x[N]; // 
-            real<lower=0, upper=1> educability;
-            real<lower=0, upper=1> forgetting;
+    def select_to_cor_and_get_max_cor(self, act_in, included_vars):
+        # Get the currently selected variables as boolean mask
+        mask = torch.zeros(self.n_covars + 1, dtype=bool)
+        mask[included_vars] = True
 
-        }
-        parameters {
-            //real<lower=0, upper=1> pp_init;
-            vector<lower=0.0, upper=1.0>[2] beta;
-            //real<lower=0, upper=1> educability;
-        }
+        # Set the recommended variable to False. Otherwise cross-correlations will include self-correlation.
+        mask[act_in] = False
 
-        transformed parameters{
-            vector[2] beta_constrained[2];
-            real pp_init;
-            matrix[N,2] mxs;
-            matrix<lower=0, upper=1>[N,2] pp;
-            vector[N] f;
+        # Get the cross-correlations between recommended var and included vars.
+        masked = self.corr_mat[act_in, mask]
 
-            pp_init = 0.5;
-            beta_constrained[1][2] = 0.0;
-            beta_constrained[1][1] = 1.0 + (10.0) * beta[1];  
-            beta_constrained[2][1] = 1.0 + (10.0) * beta[1];  
-            beta_constrained[2][2] = -11.0 + (10.0) * beta[2];  
-
-
-            for (n in 1:N){
-                if (x[n][1] != -1.0){
-                    mxs[n,1] = exp(bernoulli_logit_lpmf( y[n] | 1.0 +  (x[n] *  beta_constrained[1])));
-                    mxs[n,2] = exp(bernoulli_logit_lpmf( y[n] | 1.0 +  (x[n] *  beta_constrained[2])));
-                }
-
-                else{
-                    mxs[n,1] = mxs[n-1,1];
-                    mxs[n,2] = mxs[n-1,2];
-                }
-
-            }        
-            for (n in 1:N){
-
-                if (n==1) {
-                    f[n] = (1-pp_init) * mxs[n,1] + pp_init * mxs[n,2]; 
-                    pp[n,1] = (1-pp_init) * mxs[n,1] / f[n];
-                    pp[n,2] = 1.0 - pp[n,1];
-                }
-                else {
-
-                    if (x[n][1] != -1.0) {
-
-                        if(x[n-1][1] == -1.0){
-                            f[n] = (1-educability) * pp[n-1,1] * mxs[n,1] + (educability) * pp[n-1,1]  * mxs[n,2] + pp[n-1,2] * mxs[n,2]; 
-                            pp[n,1] = (1-educability) * pp[n-1,1] * mxs[n,1] / f[n];
-                            pp[n,2] = 1.0 - pp[n,1];
-                        }
-                        else{
-                            f[n] =  pp[n-1,1] * mxs[n,1] + pp[n-1,2] * (1-forgetting) * mxs[n,2] + pp[n-1,2] * forgetting * mxs[n,1]; 
-                            pp[n,1] = (pp[n-1,1] * mxs[n,1] + pp[n-1,2] * forgetting * mxs[n,1]) / f[n];
-                            pp[n,2] = 1.0 - pp[n,1];
-                        }
-                    }
-
-                    else {
-                        f[n] = 1.0;
-                        pp[n,1] = (1-educability) * pp[n-1,1];
-                        pp[n,2] = 1- pp[n,1];
-                        //pp[n,1] = pp[n-1,1];
-                        //pp[n,2] = pp[n-1,2];
-                    }
-                }
-            }
-        }
-
-        model {
-
-            //Put more informative priors for the parameters
-            target += sum(log(f));
-            }
-
-        """
-        file_path = os.path.abspath(self.user_model_file)
-        if not os.path.exists(file_path):
-            sm = pystan.StanModel(model_code=mixture_with_tseries_model)
-            fit = sm.sampling(data=data, iter=1000, chains=4, n_jobs=1)
-            with open(file_path, "wb") as f:
-                pickle.dump(sm, f)
+        # If there are more than one variables included
+        if masked.size != 0:
+            # The maximum absolute cross-correlation to selected vars.
+            max_cross_corr = np.max(masked)
+            to_cor = np.arange(self.n_covars + 1)[mask][np.argmax(masked)]
 
         else:
+            # Set to zero since there are no vars to cross-correlate to
+            max_cross_corr = 0.0
+            to_cor = act_in
 
-            with open(file_path, "rb") as f:
-                sm = pickle.load(f)
-                fit = sm.sampling(data=data, iter=1000, chains=4, n_jobs=1)
-
-        s = fit.summary()
-        fit_summary = pandas.DataFrame(
-            s['summary'],
-            columns=s['summary_colnames'],
-            index=s['summary_rownames'])
-
-        # Indices for grabbing the necessary statistics
-        # from Stan fit object
-        strt = 6 + (3 * self.i)
-        endn = strt + self.i
-
-        betas_mean = list(fit_summary.iloc[2:6, 0])
-        betas_mean[1], betas_mean[2] = betas_mean[2], betas_mean[1]
-        # print(summary.iloc[[strt, endn], 0])
-        # E[\alpha_0] and E[\alpha_1],
-        # posterior expectations of type-0 and type-1 probabilities
-        type_probs_mean = list(fit_summary.iloc[[strt, endn], 0])
-        sample_user_type = np.random.choice(2, p=type_probs_mean)
-
-        self.sample_user_model = (
-            sample_user_type, betas_mean[0], betas_mean[1], betas_mean[2],
-            betas_mean[3], self.educability)
-
-        print("sample_user_model", self.sample_user_model)
+        return to_cor, max_cross_corr
