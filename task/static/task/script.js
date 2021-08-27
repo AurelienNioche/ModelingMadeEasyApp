@@ -256,6 +256,7 @@ $("#confirm-ignore").click(function() {
 
 $("#close-tutorial").click(function() {
     $("#full-tutorial-popup").hide();
+    AIaskUserForNewSuggestion();
     sendInfoToServer('close-tutorial');
 })
 

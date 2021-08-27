@@ -52,7 +52,7 @@ class AiAssistant:
         self.cost = torch.zeros(self.n_covars + 1) + init_var_cost
         self.cost[-1] = init_educ_cost
 
-        self.fit = None
+        self.sample_user_model = None
         self.prev_action = None
         self.prev_max_cor = None
 
@@ -72,26 +72,6 @@ class AiAssistant:
             r_i = np.random.randint(self.n_covars)
 
         else:
-            # Indices for grabbing the necessary statistics
-            # from Stan fit object
-            strt = 6 + (3 * self.i)
-            endn = strt + self.i
-
-            s = self.fit.summary()
-            summary = pandas.DataFrame(s['summary'],
-                                       columns=s['summary_colnames'],
-                                       index=s['summary_rownames'])
-            betas_mean = list(summary.iloc[2:6, 0])
-            betas_mean[1], betas_mean[2] = betas_mean[2], betas_mean[1]
-            # print(summary.iloc[[strt, endn], 0])
-            # E[\alpha_0] and E[\alpha_1],
-            # posterior expectations of type-0 and type-1 probabilities
-            type_probs_mean = list(summary.iloc[[strt, endn], 0])
-            sample_user_type = np.random.choice(2, p=type_probs_mean)
-
-            sample_user_model = (
-                sample_user_type, betas_mean[0], betas_mean[1], betas_mean[2],
-                betas_mean[3], self.educability)
 
             # Returns educate OR recommend and if recommend,
             # recommended covar's index. IF not, r_i is None.
@@ -99,7 +79,7 @@ class AiAssistant:
                 self.n_covars,
                 self.aux_data_dict["xi"],
                 self.corr_mat,
-                sample_user_model,
+                self.sample_user_model,
                 self.cost,
                 self.n_interactions - self.i + 1,
                 self.n_training_collinear,
@@ -121,7 +101,7 @@ class AiAssistant:
         else:
             act_in = AiAssistant.EDUCATE
             rec_item_cor = None
-
+        print("AI reco", act_in, rec_item_cor)
         return act_in, rec_item_cor
 
     def select_var_to_cor(self, act_in, included_vars):
@@ -166,12 +146,11 @@ class AiAssistant:
 
         # Add the observation to dataset.
         # So this observations are like: (corr, cross_corr), outcome.
-        self.data_dict["x"].append([float(x) for x in action])
+        self.data_dict["x"].append(action)
         self.data_dict["y"].append(outcome)
 
         self.data_dict["N"] += 1
-        self.fit = self.fit_model_w_education(self.data_dict)
-
+        self.fit_model_w_education(self.data_dict)
         self.i += 1
 
     def fit_model_w_education(self, data):
@@ -268,11 +247,33 @@ class AiAssistant:
             with open(file_path, "wb") as f:
                 pickle.dump(sm, f)
 
-            return fit
         else:
 
             with open(file_path, "rb") as f:
                 sm = pickle.load(f)
                 fit = sm.sampling(data=data, iter=1000, chains=4, n_jobs=1)
 
-            return fit
+        s = fit.summary()
+        fit_summary = pandas.DataFrame(
+            s['summary'],
+            columns=s['summary_colnames'],
+            index=s['summary_rownames'])
+
+        # Indices for grabbing the necessary statistics
+        # from Stan fit object
+        strt = 6 + (3 * self.i)
+        endn = strt + self.i
+
+        betas_mean = list(fit_summary.iloc[2:6, 0])
+        betas_mean[1], betas_mean[2] = betas_mean[2], betas_mean[1]
+        # print(summary.iloc[[strt, endn], 0])
+        # E[\alpha_0] and E[\alpha_1],
+        # posterior expectations of type-0 and type-1 probabilities
+        type_probs_mean = list(fit_summary.iloc[[strt, endn], 0])
+        sample_user_type = np.random.choice(2, p=type_probs_mean)
+
+        self.sample_user_model = (
+            sample_user_type, betas_mean[0], betas_mean[1], betas_mean[2],
+            betas_mean[3], self.educability)
+
+        print("sample_user_model", self.sample_user_model)

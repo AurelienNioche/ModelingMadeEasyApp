@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.http import JsonResponse
 
 import json
+import numpy as np
 
 from .models import TaskLog, UserModel, UserData
 
@@ -10,6 +11,9 @@ from .dataset.generate_data import generate_data
 from .ai.ai import AiAssistant
 from .ai.planning.rollout_one_step_la import rollout_onestep_la
 from .ai.planning.no_educate_rollout_one_step_la import no_educate_rollout_one_step_la
+
+
+RANDOM_AI_SELECT = True
 
 
 class Action:
@@ -79,7 +83,7 @@ def init(user_id, group_id):
     init_cost = 0.05
     init_last_cost = 0.5
 
-    n_interactions = 10000
+    n_interactions = 20
 
     training_dataset = generate_data(n_noncollinear=n_noncollinear,
                                      n_collinear=n_collinear,
@@ -158,23 +162,33 @@ def format_rec(rec_item, rec_item_cor):
 
 def get_recommendation(user_id, included_vars):
 
-    print("getting recommendation")
+    if RANDOM_AI_SELECT:
+        rec_item = np.random.randint(8)
+        rec_item_cor = np.random.randint(8)
 
-    included_vars = unformat_included_vars(included_vars)
+    else:
 
-    um = UserModel.objects.get(user_id=user_id)
-    ai = um.value
-    rec_item, rec_item_cor = ai.get_recommendation(included_vars)
+        print("getting recommendation")
 
-    print("saving object")
+        included_vars = unformat_included_vars(included_vars)
 
-    um.value = ai
-    um.save()
-    print("returning response")
+        um = UserModel.objects.get(user_id=user_id)
+        ai = um.value
+        rec_item, rec_item_cor = ai.get_recommendation(included_vars)
+
+        print("saving object")
+
+        um.value = ai
+        um.save()
+        print("returning response")
+
     return format_rec(rec_item, rec_item_cor)
 
 
 def user_feedback(user_id, action_type):
+
+    if RANDOM_AI_SELECT:
+        return
 
     um = UserModel.objects.get(user_id=user_id)
 
