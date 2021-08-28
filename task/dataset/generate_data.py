@@ -24,22 +24,15 @@ def generate_data(n_collinear=4, n_noncollinear=4, n=100,
     x_noncolin = Normal(0.0, std_noncollinear).sample((n, n_noncollinear))
     x_noncolin = x_noncolin.squeeze()
 
-    x_noncolin_test = Normal(0.0, std_noncollinear).sample((n, n_noncollinear))
-    x_noncolin_test = x_noncolin_test.squeeze()
-
     design_matrix = torch.cat((x_colin, x_noncolin), dim=1)
-    design_matrix_test = torch.cat((x_colin_test, x_noncolin_test), dim=1)
 
     # Generate outputs
-
     coeff_intercept = 1
     phi = 0.10
     covar_matrix = phi * torch.eye(n)
 
     reg_term = design_matrix @ coeffs
-    reg_term_test = design_matrix_test @ coeffs
 
     output_rv = MultivariateNormal((torch.ones(n) * coeff_intercept) + reg_term, covar_matrix).sample()
-    output_rv_test = MultivariateNormal((torch.ones(n) * coeff_intercept) + reg_term_test, covar_matrix).sample()
 
-    return design_matrix, output_rv, design_matrix_test, output_rv_test, n_collinear, n_noncollinear
+    return design_matrix, output_rv

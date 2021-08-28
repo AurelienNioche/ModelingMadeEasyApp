@@ -146,7 +146,7 @@ def ts_teach_user_switching(dataset, W_typezero=(5.0, 0.0), W_typeone=(5.0, -5.0
 
             # Outcome of recommend action from simulator. This is 0 if refused, 1 if accepted.
             # Attention! This is the USER SIMULATOR. This will be replaced with real user feedback in human study.
-            # The teacher only sees the outcome variable. Does not have access to W_typezero or W_typeone directly.
+            # The teacher only sees the outcome variable. Does not have access to w_type_zero or w_type_one directly.
             outcome = user_simulator_switching(action, torch.tensor([W_typezero, W_typeone], dtype=torch.double), a=1.0,
                                                educability=data_dict["educability"], user_type=user_type)
             print("Variable: {} Outcome: {}".format(act_in, outcome))

@@ -23,3 +23,9 @@ Admin url:
 Erase DB content:
 
     python manage.py flush
+
+
+In `task/views.py` check that:
+    
+    RANDOM_AI_SELECT = False
+    RECREATE_AT_RELOAD = False

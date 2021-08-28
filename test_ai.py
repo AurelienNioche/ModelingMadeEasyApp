@@ -3,11 +3,13 @@ import numpy as np
 # Create your tests here.
 from task.ai.ai import AiAssistant
 from task.dataset.generate_data import generate_data
-from task.ai.planning.rollout_one_step_la import rollout_onestep_la
+from task.ai.planning.rollout_one_step_la import rollout_one_step_la
 from task.ai.planning.no_educate_rollout_one_step_la import no_educate_rollout_one_step_la
 
-def main(group_id=2):
 
+def main():
+
+    group_id = 1
 
     n_data_points = 100
     n_test_dataset = 10
@@ -19,9 +21,16 @@ def main(group_id=2):
     W_typezero = (7.0, 0.0)
     W_typeone = (7.0, -7.0)
 
+    theta_1 = 1.0
+    theta_2 = 1.0
+
     educability = 0.30
     init_var_cost = 0.05
     init_edu_cost = 0.5
+
+    terminal_cost_err_mlt = 5
+    user_switch_sim_a = 1.0
+    heuristic_n_samples = 10
 
     n_interactions = 20
 
@@ -29,7 +38,7 @@ def main(group_id=2):
                                      n_collinear=n_collinear,
                                      n=n_data_points)
 
-    training_X, training_y, test_X, test_y, _, _ = training_dataset
+    training_X, training_y = training_dataset
 
     if group_id == 0:
         return
@@ -39,7 +48,7 @@ def main(group_id=2):
         planning_function = no_educate_rollout_one_step_la
 
     elif group_id == 2:
-        planning_function = rollout_onestep_la
+        planning_function = rollout_one_step_la
     else:
         raise ValueError(f"Group id incorrect: {group_id}")
 
@@ -56,13 +65,18 @@ def main(group_id=2):
         planning_function=planning_function,
         stan_compiled_model_file="task/ai/stan_model/mixture_model_w_ed.pkl",
         educability=educability,
-        W_typezero=W_typezero,
-        W_typeone=W_typeone,
-        init_var_cost=init_var_cost,
-        init_edu_cost=init_edu_cost,
+        w_type_zero=W_typezero,
+        w_type_one=W_typeone,
+        cost_var=init_var_cost,
+        cost_edu=init_edu_cost,
         n_interactions=n_interactions,
-        n_training_collinear=n_collinear,
-        n_training_noncollinear=n_noncollinear)
+        n_collinear=n_collinear,
+        n_noncollinear=n_noncollinear,
+        theta_1=theta_1,
+        theta_2=theta_2,
+        heuristic_n_samples=heuristic_n_samples,
+        user_switch_sim_a=user_switch_sim_a,
+        terminal_cost_err_mlt=terminal_cost_err_mlt)
 
     included_vars = []
     previous_var = None

@@ -11,40 +11,51 @@ class AiAssistant:
 
     def __init__(
             self,
-            dataset, planning_function,
+            dataset,
+            planning_function,
             test_datasets,
             stan_compiled_model_file,
-            init_var_cost,
-            init_edu_cost,
-            W_typezero,
-            W_typeone,
+            cost_var,
+            cost_edu,
+            w_type_zero,
+            w_type_one,
+            theta_1,
+            theta_2,
+            heuristic_n_samples,
+            user_switch_sim_a,
+            terminal_cost_err_mlt,
             educability,
             n_interactions,
-            n_training_collinear,
-            n_training_noncollinear):
+            n_collinear,
+            n_noncollinear):
 
-        training_X, training_y, test_X, test_y, _, _ = dataset
+        training_X, training_y = dataset
 
         self.corr_mat = np.abs(np.corrcoef(torch.transpose(
             torch.cat((training_X, training_y.unsqueeze(dim=1)), dim=1), 0,
             1)))
         self.n_covars = training_X.shape[1]
-        self.data_dict = {"N": 0, "x": [], "y": [], "beta": [W_typezero, W_typeone],
-                     "educability": educability,
-                     "forgetting": 0.0}
+        self.data_dict = {
+            "N": 0, "x": [], "y": [], "beta": [w_type_zero, w_type_one],
+            "educability": educability, "forgetting": 0.0}
 
         # cost[0,...,n_covars-1] is recommendation cost per covariate.
         # cost[n_covars] is educate cost.
-        self.cost = torch.zeros(self.n_covars + 1) + init_var_cost
-        self.cost[-1] = init_edu_cost
+        self.cost = torch.zeros(self.n_covars + 1) + cost_var
+        self.cost[-1] = cost_edu
 
         self.prev_action = None
 
         self.n_interactions = n_interactions
         self.educability = educability
-        self.n_training_collinear = n_training_collinear
-        self.n_training_noncollinear = n_training_noncollinear
+        self.n_collinear = n_collinear
+        self.n_noncollinear = n_noncollinear
         self.test_datasets = test_datasets
+        self.theta_1 = theta_1
+        self.theta_2 = theta_2
+        self.heuristic_n_samples = heuristic_n_samples
+        self.terminal_cost_err_mlt = terminal_cost_err_mlt
+        self.user_switch_sim_a = user_switch_sim_a
         self.planning_function = planning_function
 
         self.stan_compiled_model_file = stan_compiled_model_file
@@ -67,7 +78,8 @@ class AiAssistant:
             betas_mean = list(self.fit_summary.iloc[2:6, 0])
             betas_mean[1], betas_mean[2] = betas_mean[2], betas_mean[1]
             # print(summary.iloc[[strt, endn], 0])
-            # E[\alpha_0] and E[\alpha_1], posterior expectations of type-0 and type-1 probabilities
+            # E[\alpha_0] and E[\alpha_1],
+            # posterior expectations of type-0 and type-1 probabilities
             type_probs_mean = list(self.fit_summary.iloc[[strt, endn], 0])
             sample_user_type = np.random.choice(2, p=type_probs_mean)
 
@@ -82,15 +94,20 @@ class AiAssistant:
             aux_data_dict = torch.zeros(self.n_covars + 1, dtype=torch.bool)
             aux_data_dict[included_vars] = 1
             is_rec_var, r_i = self.planning_function(
-                self.n_covars, aux_data_dict,
-                self.corr_mat,
-                sample_user_model,
-                self.cost,
-                self.n_interactions - self.i + 1,
-                self.n_training_collinear,
-                self.n_training_noncollinear,
-                self.test_datasets,
-                prev_action=self.prev_action)
+                xi=aux_data_dict,
+                corr_mat=self.corr_mat,
+                sample_user_model=sample_user_model,
+                cost=self.cost,
+                time_to_go=self.n_interactions - self.i + 1,
+                n_collinear=self.n_collinear,
+                n_noncollinear=self.n_noncollinear,
+                test_datasets=self.test_datasets,
+                prev_action=self.prev_action,
+                theta_1=self.theta_1,
+                theta_2=self.theta_2,
+                heuristic_n_samples=self.heuristic_n_samples,
+                user_switch_sim_a=self.user_switch_sim_a,
+                terminal_cost_err_mlt=self.terminal_cost_err_mlt)
 
         # if recommendation a variable
         if is_rec_var:
@@ -98,7 +115,7 @@ class AiAssistant:
             to_cor, _ = self.select_to_cor_and_get_max_cor(
                 act_in, included_vars)
 
-        # If *educate*
+        # if *educate*
         else:
             act_in = AiAssistant.EDUCATE
             to_cor = None
@@ -120,7 +137,8 @@ class AiAssistant:
             _, max_cross_cor = self.select_to_cor_and_get_max_cor(
                 act_in, included_vars)
 
-            # Generate the action's observation vector for the user: (corr, cross_corr).
+            # Generate the action's observation vector for the user:
+            # (corr, cross_corr).
             action = [self.corr_mat[act_in, -1], max_cross_cor]
 
             # Logs the user's response time
@@ -129,7 +147,8 @@ class AiAssistant:
             # we update prev_action only if not educate
             self.prev_action = act_in
 
-        # Add the observation to dataset. So this observations are like: (corr, cross_corr), outcome.
+        # Add the observation to dataset.
+        # So this observations are like: (corr, cross_corr), outcome.
         self.data_dict["x"].append(action)
         self.data_dict["y"].append(outcome)
 
@@ -140,11 +159,14 @@ class AiAssistant:
             self.data_dict,
             self.stan_compiled_model_file)
 
-        ### User model estimation part. Uses Certainty Equivalence to replace betas with their expectation, and posterior sampling to sample a user type.
+        # User model estimation part.
+        # Uses Certainty Equivalence to replace betas with their expectation,
+        # and posterior sampling to sample a user type.
         s = fit.summary()
-        self.fit_summary = pandas.DataFrame(s['summary'],
-                                   columns=s['summary_colnames'],
-                                   index=s['summary_rownames'])
+        self.fit_summary = pandas.DataFrame(
+            s['summary'],
+            columns=s['summary_colnames'],
+            index=s['summary_rownames'])
 
         self.i += 1
 
@@ -153,7 +175,8 @@ class AiAssistant:
         mask = torch.zeros(self.n_covars + 1, dtype=bool)
         mask[included_vars] = True
 
-        # Set the recommended variable to False. Otherwise cross-correlations will include self-correlation.
+        # Set the recommended variable to False.
+        # Otherwise cross-correlations will include self-correlation.
         mask[act_in] = False
 
         # Get the cross-correlations between recommended var and included vars.

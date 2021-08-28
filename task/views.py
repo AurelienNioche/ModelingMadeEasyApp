@@ -9,11 +9,14 @@ from .models import TaskLog, UserModel, UserData
 from .dataset.generate_data import generate_data
 
 from .ai.ai import AiAssistant
-from .ai.planning.rollout_one_step_la import rollout_onestep_la
+from .ai.planning.rollout_one_step_la import rollout_one_step_la
 from .ai.planning.no_educate_rollout_one_step_la import no_educate_rollout_one_step_la
+
+from .config import config
 
 
 RANDOM_AI_SELECT = False
+RECREATE_AT_RELOAD = True
 
 
 class Action:
@@ -49,7 +52,7 @@ class Action:
 
 def format_data(dataset):
 
-    training_X, training_y, test_X, test_y, _, _ = dataset
+    training_X, training_y = dataset
 
     X = training_X.T.tolist()
     y = training_y.tolist()
@@ -65,33 +68,22 @@ def init(user_id, group_id):
     uds = UserData.objects.filter(user_id=user_id)
     print(uds)
     if len(uds):
-        print("user already exists, I just load the data")
-        # return uds[0].value
-        UserData.objects.all().delete()
-        UserModel.objects.all().delete()
+        if RECREATE_AT_RELOAD:
+            UserData.objects.all().delete()
+            UserModel.objects.all().delete()
+            print("Recreating data and ai")
+
+        else:
+            print("user already exists, I just load the data")
+            return uds[0].value
 
     # ----------- if not already existing ----------------- #
     print("Generating data")
 
-    n_data_points = 100
-    n_test_dataset = 10
-
-    n_collinear = 2 # difficulty[t][0]
-    n_noncollinear = 6  # difficulty[t][1]
-
-    # FORGET ABOUT THESE ????
-    W_typezero = (7.0, 0.0)
-    W_typeone = (7.0, -7.0)
-
-    educability = 0.30
-    init_cost = 0.05
-    init_last_cost = 0.5
-
-    n_interactions = 20
-
-    training_dataset = generate_data(n_noncollinear=n_noncollinear,
-                                     n_collinear=n_collinear,
-                                     n=n_data_points)
+    training_dataset = generate_data(
+        n_noncollinear=config.N_NONCOLLINEAR,
+        n_collinear=config.N_COLLINEAR,
+        n=config.N_DATA_POINTS)
 
     data = format_data(training_dataset)
 
@@ -108,15 +100,16 @@ def init(user_id, group_id):
         planning_function = no_educate_rollout_one_step_la
 
     elif group_id == 2:
-        planning_function = rollout_onestep_la
+        planning_function = rollout_one_step_la
     else:
         raise ValueError(f"Group id incorrect: {group_id}")
 
     print("generating test data sets...")
-    test_datasets = [generate_data(n_noncollinear=n_noncollinear,
-                                   n_collinear=n_collinear,
-                                   n=n_data_points) for
-                     _ in range(n_test_dataset)]
+    test_datasets = [generate_data(
+        n_noncollinear=config.N_NONCOLLINEAR,
+        n_collinear=config.N_COLLINEAR,
+        n=config.N_DATA_POINTS)
+        for _ in range(config.N_TEST_DATASET)]
     test_datasets.append(training_dataset)
 
     print("creating ai assistant")
@@ -125,14 +118,19 @@ def init(user_id, group_id):
         dataset=training_dataset,
         planning_function=planning_function,
         test_datasets=test_datasets,
-        W_typezero=W_typezero,
-        W_typeone=W_typeone,
-        educability=educability,
-        n_training_collinear=n_collinear,
-        n_training_noncollinear=n_noncollinear,
-        n_interactions=n_interactions,
-        init_var_cost=init_cost,
-        init_edu_cost=init_last_cost,
+        w_type_zero=config.W_TYPEZERO,
+        w_type_one=config.W_TYPEONE,
+        educability=config.EDUCABILITY,
+        n_collinear=config.N_COLLINEAR,
+        n_noncollinear=config.N_NONCOLLINEAR,
+        n_interactions=config.N_INTERACTIONS,
+        cost_var=config.COST_VAR,
+        cost_edu=config.COST_EDU,
+        theta_1=config.THETA_1,
+        theta_2=config.THETA_2,
+        heuristic_n_samples=config.HEURISTIC_N_SAMPLES,
+        user_switch_sim_a=config.USER_SWITCH_SIM_A,
+        terminal_cost_err_mlt=config.TERMINAL_COST_ERR_MLT,
         stan_compiled_model_file="task/ai/stan_model/mixture_model_w_ed.pkl")
 
     print("creating and saving user model")
@@ -143,6 +141,7 @@ def init(user_id, group_id):
 
 
 def unformat_included_vars(included_vars):
+
     included_vars = included_vars.replace("X", "")
     included_vars = included_vars.split(",")
     included_vars = [int(x) - 1 for x in included_vars if len(x)]
