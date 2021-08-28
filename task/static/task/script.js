@@ -327,10 +327,6 @@ $('select#vis1-x').click(function(){
 });
 
 $('select#vis2-y').click(function(){
-    // if (aiIsWaiting()) {
-    //     showAiPopupFeedback();
-    //     return;
-    // }
 	const userSelectedX = $("#vis1-x").val();
     const userSelectedY = $("#vis2-y").val();
     visualize2vars(userSelectedX, userSelectedY);
@@ -372,6 +368,7 @@ visualize2vars(labels[0], labels[0]);
 // Select variables in list boxes
 $("#vis1-x").val(labels[0]);
 $("#vis2-y").val(labels[0]);
+$("#rightValues").val(labels[0]);
 
 // visualizeReco();
 console.log(allData);
