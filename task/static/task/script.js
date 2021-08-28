@@ -12,6 +12,8 @@ let vis2_y = "X1";
 let pending_action;
 let pending_value;
 
+let pending_rec = false;
+
 function sendInfoToServer(action_type, action_var=null) {
 	let timestamp = Date.now();
 	console.log("Send: " + action_type + "; " + action_var);
@@ -120,15 +122,19 @@ function populate_select_options(vars, selectbox_id) {
 
 /* AI */
 function visualizeReco() {
+    pending_rec = true;
 
     visualizeVar(rec_item);
     visualize2vars(rec_item, rec_item_cor);
 
     selectRecInModel();
 
-    AIupdateMessage(
-        "Variable review recommendation: ", rec_item,
-        "Do you think it is a good suggestion?");
+    let included = varIncludedInModel(rec_item);
+    if (included) {
+        AIupdateMessage(`Would you like to keep variable ${rec_item} in the model?`)
+    } else {
+        AIupdateMessage(`Would you like to include variable ${rec_item} in the model?`)
+    }
     AIdisplayFeedback();
 }
 
@@ -136,28 +142,14 @@ function varIncludedInModel(var_name) {
     let included = false;
     $("#leftValues option").each(function() {
         let var_value = $(this).val();
-        console.log(var_value);
         if (var_value === var_name) {
-            console.log("found it!")
             included = true;
         }
     });
     return included;
 }
 
-function moveVarInModel(var_name="") {
-    console.log("Moving " + var_name)
-    let included = varIncludedInModel(var_name);
-    console.log("Var " + var_name + " included in the model: " + included);
-    let to_remove_from;
-    let to_include_in;
-    if (included) {
-        to_remove_from = "leftValues";
-        to_include_in = "rightValues";
-    } else {
-        to_remove_from = "rightValues";
-        to_include_in = "leftValues";
-    }
+function switchVarInModel(var_name="", to_remove_from, to_include_in) {
     $("#" + to_remove_from + " option[value=" + var_name + "]").remove();
     let opt = document.createElement("option");
     opt.value = var_name;
@@ -167,16 +159,35 @@ function moveVarInModel(var_name="") {
     select.val(var_name);
 }
 
+function includeVarInModel(var_name="") {
+    let included = varIncludedInModel(var_name);
+    if (included) {
+        console.log("Var " + var_name + " already included");
+    }else {
+        console.log("Including " + var_name);
+        switchVarInModel(rec_item, "rightValues", "leftValues");
+    }
+}
+
+
+function excludeVarFromModel(var_name="") {
+
+    let included = varIncludedInModel(var_name)
+    if (included) {
+        switchVarInModel(rec_item, "leftValues", "rightValues");
+    } else {
+        console.log("Variable already excluded")
+    }
+}
+
 function AIaskUserForNewSuggestion() {
     $("#ai-container-btn-feedback").hide();
     $("#ai-container-btn-new").show();
     AIupdateMessage("Would like me to help you exploring the variables?");
 }
 
-function AIupdateMessage(message="", value="", after_value="") {
+function AIupdateMessage(message="") {
     $("#recommendation-text").text(message);
-    $("#recommendation-value").text(value);
-    $("#recommendation-text-after-value").text(after_value);
 }
 
 function AIdisplayFeedback() {
@@ -188,9 +199,6 @@ function openFullTutorial() {
     $("#full-tutorial-popup").show();
 }
 
-function aiIsWaiting() {
-    return $("#recommendation-value").text() !== "";
-}
 
 function unSelectEverythingInModel() {
     $("#leftValues option:selected").removeAttr("selected");
@@ -223,7 +231,7 @@ function getIncludedVariables() {
 $('#leftValues').change(function(){
     let value = $(this).val();
     console.log("select left " + value);
-    if (aiIsWaiting()) {
+    if (pending_rec) {
         showAiPopupFeedback();
     }
 })
@@ -231,7 +239,7 @@ $('#leftValues').change(function(){
 $('#rightValues').change(function(){
     let value = $(this).val();
     console.log("select right " + value);
-    if (aiIsWaiting()) {
+    if (pending_rec) {
         showAiPopupFeedback();
     }
 })
@@ -253,6 +261,7 @@ $("#confirm-ignore").click(function() {
     AIaskUserForNewSuggestion();
     pending_action = null;
     pending_value = null;
+    pending_rec = false;
     sendInfoToServer("ignore", rec_item);
 })
 
@@ -263,24 +272,27 @@ $("#close-tutorial").click(function() {
 })
 
 $("#accept").click(function(){
-    moveVarInModel(rec_item);
+    includeVarInModel(rec_item);
     AIaskUserForNewSuggestion();
+    pending_rec = false;
     sendInfoToServer("accept", rec_item);
 })
 
 $("#refuse").click(function(){
+    excludeVarFromModel(rec_item);
     AIaskUserForNewSuggestion();
+    pending_rec = false;
     sendInfoToServer("refuse", rec_item);
 })
 
 $("#new").click(function(){
     $("#ai-container-btn-new").hide();
     sendInfoToServer("new");
-    AIupdateMessage("Let me think...")
+    AIupdateMessage("Let me think...");
 })
 
 $("#btnLeft").click(function () {
-    if (aiIsWaiting()) {
+    if (pending_rec) {
         showAiPopupFeedback();
         return;
     }
@@ -290,7 +302,7 @@ $("#btnLeft").click(function () {
 });
 
 $("#btnRight").click(function () {
-    if (aiIsWaiting()) {
+    if (pending_rec) {
         showAiPopupFeedback();
         return;
     }
@@ -301,7 +313,7 @@ $("#btnRight").click(function () {
 
 $('select#vis1-x').click(function(){
     let userSelectedX = $("#vis1-x").val()
-    if (aiIsWaiting()) {
+    if (pending_rec) {
         pending_action = "vis1-x";
         pending_value = userSelectedX;
         showAiPopupFeedback();
