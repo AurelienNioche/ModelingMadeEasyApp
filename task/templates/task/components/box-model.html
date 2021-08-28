@@ -1,5 +1,7 @@
-<div class="box-model">
-    <div class="subtitle">Model Selection</div>
+<div class="box box-model">
+    <div class="title-container">
+        <div class="subtitle">Model Selection</div>
+    </div>
     <div class = "note-container">
         <div class="note">
             Please choose the variables to be included in the model by
@@ -9,7 +11,7 @@
             {%  endif %}
         </div>
     </div>
-    <div class="container">
+    <div class="model-container">
         <div class="model-left">
             <p style="font-size:80%">Selected Variable</p>
             <label for="leftValues"></label><select id="leftValues" size="5"></select>
@@ -23,8 +25,10 @@
             <label for="rightValues"></label><select id="rightValues" size="4"></select>
         </div>
     </div>
-    <form action="{%  url 'task' user_id=user_id group_id=group_id %}" method="post" id="submit-form">
-    {% csrf_token %}
+    <div class="button-submit-container">
+        <form class="button-submit-form" action="{%  url 'task' user_id=user_id group_id=group_id %}" method="post" id="submit-form">
+        {% csrf_token %}
         <button class="button-submit" type="submit" id="button-submit" >Submit</button>
-    </form>
+        </form>
+    </div>
 </div>

@@ -1,27 +1,9 @@
 .grid-parent{
-    grid-template-columns: 5.5fr 4.5fr;
-    grid-template-rows: 35px auto 330px 360px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 330px 380px;
 }
 
-.vis1-container {
-    grid-template-rows: 30px auto auto;
-}
-
-.vis2-container{
-    grid-template-rows: 30px 70px auto;
-}
-
-
-.chart-c{
-    width: 400px;
-    margin: auto;
-}
-
-.title{
-    grid-column: span 2;
-}
-
-.title_note{
+.box-title{
     grid-column: span 2;
 }
 
@@ -30,8 +12,3 @@
     grid-template-columns: 2fr 3fr;
 }
 
-.container{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    background-color: #fcf2d9;
-}

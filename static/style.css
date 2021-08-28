@@ -1,8 +1,8 @@
 div {
-  font-family: 'Roboto Slab', "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto Slab", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.t_note {
+.title-note {
   text-align: justify;
   text-justify: inter-word;
 }

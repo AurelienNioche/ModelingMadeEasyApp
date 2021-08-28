@@ -1,30 +1,35 @@
-<div class = "title_note">
-    <p class="t_note">
+<div class = "box box-title">
+    <div class="title-container">
+            <div class="title">Build the model</div>
+    </div>
+    <div class="title-note-container">
+        <p class="title-note">
     {% if group_id == 0 %}
-        Instruction: In the model test, we have tried to build the linear regression model with independent variables:
-        Height (X1) Weight (X2) and Hair Length (X3).
+        <b>Instruction:</b> In the model test, we have tried to build the linear regression model with independent variables:
+        Height (<i>X1</i>) Weight (<i>X2</i>) and Hair Length (<i>X3</i>).
         The idea is similar in this experiment. You will construct a linear regression
         model given 8 independent variables. You could explore them with the left two blocks, and study linear
         regression modeling with the Tutorial Material. Eventually, you would need to choose the variables
-        that you'd like to include in this model and sumbit it. Good luck!
+        that you'd like to include in this model and submit it. Good luck!
     {% elif group_id == 1 %}
         Instruction: In the model test, we have tried to build the linear regression model
         with independent variables:
-        Height (X1) Weight (X2) and Hair Length (X3).
+        Height (<i>X1</i>) Weight (<i>X2</i>) and Hair Length (<i>X3</i>).
         The idea is similar in this experiment. You will construct a linear regression
         model given 8 independent variables (X1...X8). You could explore them with the left two blocks.
         <b>AI system will assist you in constructing the model,</b> it will give you feedback
         based on your model selections.
         Eventually, you would need to choose the variables
-        that you'd like to include in this model and sumbit it. Good luck!
+        that you'd like to include in this model and submit it. Good luck!
     {%  else %}
         Instruction: In the model test, we have tried to build the linear regression model with independent variables:
-        Height (X1) Weight (X2) and Hair Length (X3).
+        Height (<i>X1</i>) Weight (<i>X2</i>) and Hair Length (<i>X3</i>).
         The idea is similar in this experiment. You will construct a linear regression
         model given 8 independent variables. You could explore them with the two blocks on the top, and study linear
-        regression modeling with the <b>Tutorial Material</b>. <b>AI system will assist you in constructing the model</b>,
+        regression modeling with the Tutorial Material. <b>AI system will assist you in constructing the model</b>,
         it will give you feedback based on your model selections. Eventually, you would need to choose the variables that
-        you'd like to include in this model and sumbit it. Good luck!
+        you'd like to include in this model and submit it. Good luck!
     {%  endif %}
     </p>
+    </div>
 </div>
