@@ -335,7 +335,7 @@ $('select#vis2-y').click(function(){
 
 $("#button-submit").click(function(){
     console.log("Click on submit");
-    $("#submit-popup").show();
+    $("#popup-submit").show();
     return false;
 })
 
@@ -346,7 +346,7 @@ $("#confirm-submit").click(function(){
 })
 
 $("#cancel-submit").click(function() {
-    $("#submit-popup").hide();
+    $("#popup-submit").hide();
 })
 
 
