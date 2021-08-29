@@ -11,6 +11,12 @@ def index(request, user_id="user_test"):
         form = Form(request.POST)
         if form.is_valid():
             print(f"user_id={user_id}; survey={form.cleaned_data}")
+
+            ss = Survey.objects.filter(user_id=user_id)
+            if len(ss):
+                ss.objects.all().delete()
+                print("Erasing previous form")
+
             s = Survey(user_id=user_id,
                        q1=form.cleaned_data["q1"],
                        q2=form.cleaned_data["q2"],

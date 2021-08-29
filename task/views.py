@@ -66,7 +66,6 @@ def format_data(dataset):
 def init(user_id, group_id):
 
     uds = UserData.objects.filter(user_id=user_id)
-    print(uds)
     if len(uds):
         if RECREATE_AT_RELOAD:
             UserData.objects.all().delete()

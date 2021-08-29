@@ -22,6 +22,11 @@ def index(request, after=0, user_id="user_test"):
         if form.is_valid():
             print(f"user_id={user_id}; modeling_test={form.cleaned_data}")
 
+            mt = ModelingTest.objects.filter(user_id=user_id, after=bool(after))
+            if len(mt):
+                mt.objects.all().delete()
+                print("Erasing previous form")
+
             mt = ModelingTest(
                 user_id=user_id,
                 is_after=bool(after),
