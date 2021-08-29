@@ -6,27 +6,29 @@
     <link rel= "stylesheet" href="{%  static 'modeling_test/style.css' %}">
 {%  endblock %}
 
-{% block content_title %}
-    <div class = "title name"> Modelling Test</div>
-{% endblock %}
-
 {%  block content %}
-<div class = "note"><p class = "m_note">
-        {% if after %}
-            This is the same modelling test as before. Based on what you have learnt, please update your answer.
-        {%  else %}
-        This modelling test is for understanding your background on Linear Regression Modelling
-            and for assessing our teaching tool.<br> It is okay to make mistakes. Please don't be stressed and
-            just choose your ideal options. And please don't come back to this page to change your answer.
-            We will come to the same test again later.
-        {% endif %}
-    </p>
+<div class = "box box-title">
+    <div class="title-container">
+            <div class="title">Modeling test</div>
+    </div>
+    <div class="title-note-container">
+        <div class="title-note">
+            {% if after %}
+                <p style="text-align: center;">This is the same modelling test as before. Based on what you have learnt, please update your answer.</p>
+            {%  else %}
+                <p>This modelling test is for understanding your background on Linear Regression Modelling
+                and for assessing our teaching tool.</p><p> It is okay to make mistakes. Please don't be stressed and
+                just choose your ideal options. And please don't come back to this page to change your answer.
+                We will come to the same test again later.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 <div class = "box-one">
-    <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHeight.png' %}" alt="Points VS Height"></div>
-    <div><img class ="scatter_image" src="{%  static 'modeling_test/PVWeight.png' %}" alt="Points VS Weight"></div>
-    <div><img class ="scatter_image" src="{%  static 'modeling_test/PVHair.png' %}" alt="Points VS Hair length"></div>
-    <div><img class ="scatter_image" src="{%  static 'modeling_test/WVH.png' %}" alt="Weight VS Height"></div>
+    <div class="img-container"><img class ="scatter-image-top" src="{%  static 'modeling_test/PVHeight.png' %}" alt="Points VS Height"></div>
+    <div class="img-container"><img class ="scatter-image-top" src="{%  static 'modeling_test/PVWeight.png' %}" alt="Points VS Weight"></div>
+    <div class="img-container"><img class ="scatter-image-bottom" src="{%  static 'modeling_test/PVHair.png' %}" alt="Points VS Hair length"></div>
+    <div class="img-container"><img class ="scatter-image-bottom" src="{%  static 'modeling_test/WVH.png' %}" alt="Weight VS Height"></div>
 </div>
 
 <div class = "box-two">
@@ -48,7 +50,7 @@
         {% csrf_token %}
         {{ form }}
         <p></p>
-        <input type="submit" value="Next">
+        <button type="submit">Next</button>
     </form>
 </div>
 {%  endblock %}

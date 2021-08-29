@@ -6,16 +6,17 @@
     <link rel= "stylesheet" href="{%  static 'pre_questionnaire/style.css' %}">
 {%  endblock %}
 
-{% block content_title %}
-    <div class = "title name">Demographic Info Questionnaire</div>
-{% endblock %}
-
 {%  block content %}
-    <div class = "box-one">
-          <form class = "questionnaire" action="{% url 'pre_questionnaire' user_id=user_id%}" method="post">
-              {% csrf_token %}
-              {{ form }}
-              <input class = "submitbtn" type="submit" value="Next">
-          </form>
-        </div>
+<div class="box">
+    <div class="title-container">
+        <div class = "title">Demographic info questionnaire</div>
+    </div>
+    <div>
+      <form class = "questionnaire" action="{% url 'pre_questionnaire' user_id=user_id%}" method="post">
+          {% csrf_token %}
+          {{ form }}
+          <button type="submit">Next</button>
+      </form>
+    </div>
+</div>
 {%  endblock %}

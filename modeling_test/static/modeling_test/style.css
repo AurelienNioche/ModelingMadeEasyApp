@@ -1,37 +1,46 @@
 .grid-parent{
-    display: grid;
-    grid-template-columns: 5fr 5fr;
-    grid-template-rows: 35px auto auto;
-    gap: 1px;
-    width: 90%;
-    margin: auto;
-    padding: 1px;
-    background: rgb(199, 198, 198);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
 }
 
-
-
-.title{
-    text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:linen;
-    padding: 5px;
-    gap: 5px;
-    font-size: 18px;
-    grid-column: span 2;
+.content{
     display: grid;
+    grid-template-columns: 2fr 3fr;
 }
 
 .box-two {
     background-color: white;
     gap: 5px;
     padding: 5%;
-    
 }
 
-.scatter_image{
+.box-title{
+  display: grid;
+  grid-template-rows: 50px auto;
+  grid-column: span 2;
+}
+
+.title-note-container {
+  margin: 10px 40px;
+}
+
+
+.img-container {
+    position: relative;
+}
+
+.scatter-image-top{
+    position: absolute;
+    bottom: 0;
     margin: auto;
-    width:95%;
+    width:100%;
+}
+
+.scatter-image-bottom{
+    position: absolute;
+    top: 0;
+    margin: auto;
+    width:100%;
 }
 
 .box-one{
@@ -40,32 +49,10 @@
     background-color: white;
     display: grid;
     gap: 5px;
-    padding: 5%;
 }
 
 .form{
     gap: 5px;
-}
-
-.submitbtn{
-    margin-top: 30px;
-    width: 100px;
-}
-    
-
-.reason_text{
-    width:80%;
-    height: 50px;
-}
-
-.note {
-    background-color: white;
-    grid-column: span 2;
-}
-
-.m_note{
-    margin-left: 10%;
-    margin-right: 10%;
 }
 
 .questionnaire ul {

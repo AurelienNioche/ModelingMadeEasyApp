@@ -2,7 +2,7 @@
 
 
 Flow:
-* `mme_intro`,
+* `intro`,
 * `consent_form`,
 * `pre_questionnaire`,
 * `modeling_test`,
@@ -11,6 +11,16 @@ Flow:
 * `survey`,
 * `end`
 
+Setup the DB:
+
+    $ python manage.py makemigrations
+    $ python manage.py migrate
+
+Reset DB:
+    
+    $ python manage.py flush
+
+
 Create admin account:
     
     $ python manage.py createsuperuser
@@ -18,11 +28,6 @@ Create admin account:
 Admin url:
 
     <site_url>/admin/
-
-
-Erase DB content:
-
-    python manage.py flush
 
 
 In `task/views.py` check that:

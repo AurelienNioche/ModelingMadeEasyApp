@@ -6,14 +6,20 @@
     <link rel="stylesheet" href="{% static 'end/style.css' %}">
 {% endblock %}
 
-{% block content_title %}
-      <div class="title name">The End</div>
-{% endblock %}
-
 {% block content %}
-    <div class="note">
-        <p class="m_note">Thanks for your participation! Now the experiment is finished.    </p>
+<div class="box">
+    <div class="title-container">
+        <div class = "title">Modelling Made Easy | User Study</div>
     </div>
+    <div class="subtitle-container">
+        <div class = "subtitle">The end</div>
+    </div>
+    <div class="note-container">
+        <div class="note">
+            <p>Thanks for your participation! Now the experiment is finished.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block script %}

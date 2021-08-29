@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'consent_form.apps.ConsentFormConfig',
     'end.apps.EndConfig',
     'exp_tutorial.apps.ExpTutorialConfig',
-    'mme_intro.apps.MmeIntroConfig',
+    'intro.apps.IntroConfig',
     'modeling_test.apps.ModelingTestConfig',
     'pre_questionnaire.apps.PreQuestionnaireConfig',
     'survey.apps.SurveyConfig',

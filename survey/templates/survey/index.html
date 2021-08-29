@@ -6,27 +6,28 @@
         <link rel= "stylesheet" href="{% static 'survey/style.css'%}">
 {% endblock %}
 
-{% block content_title %}
-        <div class = "title name">Survey</div>
-{% endblock %}
-
 {% block content %}
-<div class="note">
-  <p class="m_note">
-    Congratulations! You are almost done with the experiment! Now we need to collect
-    some feedback on your experience.
-  </p>
-</div>
-<div class = "box">
-  <form class = "survey" action="{% url 'survey' user_id=user_id %}" method="post">
-        {% csrf_token %}
-        <p>{{ form.q1.label }}:<br>{{ form.q1 }} </p>
-        <p>{{ form.q2.label }}:<br>{{ form.q2 }} </p>
-        <p>{{ form.q3.label }}:<br>{{ form.q3 }} </p>
-        <p>{{ form.q4.label }}:<br>{{ form.q4 }} </p>
-        <p>{{ form.q5.label }}:<br>{{ form.q5 }} </p>
-        <input class = "submitbtn" type="submit" value="Next">
-  </form>
+<div class="box">
+    <div class="title-container">
+        <div class = "title">Survey</div>
+    </div>
+    <div class="title-note-container">
+        <div class="title-note">
+            <p>Congratulations! You are almost done with the experiment!</p>
+            <p>Now we need to collect some feedback on your experience.</p>
+        </div>
+    </div>
+    <div>
+      <form class = "questionnaire" action="{% url 'survey' user_id=user_id%}" method="post">
+          {% csrf_token %}
+            <p>{{ form.q1.label }}:<br>{{ form.q1 }} </p>
+            <p>{{ form.q2.label }}:<br>{{ form.q2 }} </p>
+            <p>{{ form.q3.label }}:<br>{{ form.q3 }} </p>
+            <p>{{ form.q4.label }}:<br>{{ form.q4 }} </p>
+            <p>{{ form.q5.label }}:<br>{{ form.q5 }} </p>
+          <button type="submit">Next</button>
+      </form>
+    </div>
 </div>
 {% endblock %}
 

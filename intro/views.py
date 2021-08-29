@@ -3,6 +3,6 @@ from django.template import loader
 
 
 def index(request):
-    template = loader.get_template('mme_intro/index.html')
+    template = loader.get_template('intro/index.html')
     context = {}
     return HttpResponse(template.render(context, request))
