@@ -9,8 +9,10 @@ from .models import TaskLog, UserModel, UserData
 from .dataset.generate_data import generate_data
 
 from .ai.ai import AiAssistant
-from .ai.planning.rollout_one_step_la import rollout_one_step_la
-from .ai.planning.no_educate_rollout_one_step_la import no_educate_rollout_one_step_la
+from .ai.planning.rollout_one_step_la \
+    import rollout_one_step_la
+from .ai.planning.no_educate_rollout_one_step_la \
+    import no_educate_rollout_one_step_la
 
 from .config import config
 
@@ -45,7 +47,8 @@ class Action:
     @classmethod
     def trigger_feedback(cls):
         return [
-            cls.AI_ACCEPT, cls.AI_REFUSE, cls.AI_IGNORE, cls.AI_CLOSE_TUTORIAL,
+            cls.AI_ACCEPT, cls.AI_REFUSE, cls.AI_IGNORE,
+            cls.AI_CLOSE_TUTORIAL,
             cls.ADD, cls.REMOVE
         ]
 
@@ -70,23 +73,34 @@ def init(user_id, group_id):
         if RECREATE_AT_RELOAD:
             UserData.objects.all().delete()
             UserModel.objects.all().delete()
-            print("Recreating data and ai")
+            print(f"user_id={user_id}: Recreating data and ai")
 
         else:
-            print("user already exists, I just load the data")
+            print(f"user_id={user_id}: "
+                  f"user already exists, I just load the data")
             return uds[0].value
 
     # ----------- if not already existing ----------------- #
-    print("Generating data")
 
-    training_dataset = generate_data(
+    print(f"user_id={user_id}: Generating data...",
+          end=" ", flush=True)
+    kwargs_data = dict(
         n_noncollinear=config.N_NONCOLLINEAR,
         n_collinear=config.N_COLLINEAR,
-        n=config.N_DATA_POINTS)
-
+        n=config.N_DATA_POINTS,
+        std_collinear=config.STD_COLLINEAR,
+        std_noncollinear=config.STD_NONCOLLINEAR,
+        noise_collinear=config.NOISE_COLLINEAR,
+        coeff_collinear=config.COEFF_COLLINEAR,
+        coeff_noncollinear=config.COEFF_NONCOLLINEAR,
+        coeff_intercept=config.COEFF_INTERCEPT,
+        phi=config.PHI)
+    training_dataset = generate_data(**kwargs_data)
     data = format_data(training_dataset)
+    print("Done")
 
-    print("Creating and saving user data...")
+    print(f"user_id={user_id}: Creating and saving user data...",
+          end=" ", flush=True)
     ud = UserData(user_id=user_id, group_id=group_id, value=data)
     ud.save()
     print("Done")
@@ -103,15 +117,14 @@ def init(user_id, group_id):
     else:
         raise ValueError(f"Group id incorrect: {group_id}")
 
-    print("generating test data sets...")
-    test_datasets = [generate_data(
-        n_noncollinear=config.N_NONCOLLINEAR,
-        n_collinear=config.N_COLLINEAR,
-        n=config.N_DATA_POINTS)
-        for _ in range(config.N_TEST_DATASET)]
+    print(f"user_id={user_id}: Generating test data sets...",
+          end=" ", flush=True)
+    test_datasets = [generate_data(**kwargs_data)
+                     for _ in range(config.N_TEST_DATASET)]
     test_datasets.append(training_dataset)
-
-    print("creating ai assistant")
+    print("Done")
+    print(f"user_id={user_id}: Creating ai assistant...",
+          end=" ", flush=True)
 
     ai = AiAssistant(
         dataset=training_dataset,
@@ -131,11 +144,12 @@ def init(user_id, group_id):
         user_switch_sim_a=config.USER_SWITCH_SIM_A,
         terminal_cost_err_mlt=config.TERMINAL_COST_ERR_MLT,
         stan_compiled_model_file="task/ai/stan_model/mixture_model_w_ed.pkl")
-
-    print("creating and saving user model")
+    print("Done")
+    print(f"user_id={user_id}: "
+          "Creating and saving user model...", end=" ", flush=True)
     um = UserModel(user_id=user_id, group_id=group_id, value=ai)
     um.save()
-    print("done")
+    print("Done")
     return data
 
 
@@ -178,19 +192,18 @@ def get_recommendation(user_id, included_vars):
 
     else:
 
-        print("getting recommendation")
-
+        print(f"user_id={user_id}: Getting recommendation...",
+              end=" ", flush=True)
         included_vars = unformat_included_vars(included_vars)
-
         um = UserModel.objects.get(user_id=user_id)
         ai = um.value
         rec_item, rec_item_cor = ai.act(included_vars)
+        print("Done")
 
-        print("saving object")
-
+        print(f"user_id={user_id}: Saving object...", end=" ")
         um.value = ai
         um.save()
-        print("returning response")
+        print("Done")
 
     return format_rec(rec_item, rec_item_cor)
 
@@ -203,14 +216,17 @@ def user_feedback(user_id, action_var, included_vars):
     action_var = unformat_var(action_var)
     included_vars = unformat_included_vars(included_vars)
 
-    print(f"Giving AI feedback for action_var={action_var}, "
-          f"included_vars={included_vars}")
+    print(f"user_id={user_id}: Updating AI for action_var={action_var}, "
+          f"included_vars={included_vars}...", end=" ", flush=True)
     um = UserModel.objects.get(user_id=user_id)
     ai = um.value
     ai.update(action_var, included_vars)
+    print("Done")
+
+    print(f"user_id={user_id}: Saving object...", end=" ")
     um.value = ai
     um.save()
-    print("I saved User Model")
+    print("Done")
 
 
 def user_action(request, user_id, group_id):
@@ -219,11 +235,12 @@ def user_action(request, user_id, group_id):
     action_var = request.POST.get("action_var")
     timestamp = request.POST.get("timestamp")
     included_vars = request.POST.get("included_vars")
-    print(f"user_id={user_id}; action_type={action_type}; "
+    print(f"user_id={user_id}: action_type={action_type}; "
           f"action_var={action_var}; timestamp={timestamp}")
 
     if action_type not in Action.list():
-        raise ValueError(f"`action_type` not recognized: {action_type}")
+        raise ValueError(f"user_id={user_id}: "
+                         f"`action_type` not recognized: {action_type}")
 
     if group_id == 0:
         rec_item, rec_item_cor = None, None
@@ -244,7 +261,7 @@ def user_action(request, user_id, group_id):
     else:
         rec_item, rec_item_cor = None, None
 
-    print(f"user_id={user_id} I recommend", rec_item, " and for cor", rec_item_cor)
+    print(f"user_id={user_id}: I recommend", rec_item, " and for cor", rec_item_cor)
 
     tl = TaskLog(
         user_id=user_id,

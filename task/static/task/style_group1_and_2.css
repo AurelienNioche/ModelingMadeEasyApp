@@ -1,5 +1,5 @@
 .grid-parent{
-    grid-template-rows: auto 350px 390px;
+    grid-template-rows: auto 350px 400px;
 }
 
 .top{
@@ -30,7 +30,7 @@
     background-color: white;
     text-align: center;
     display: grid;
-    grid-template-rows: 50px 40px auto 30% ;
+    grid-template-rows: 50px 50px auto 30% ;
     gap: 10px;
 }
 
@@ -72,43 +72,27 @@
 .ai-container-btn-new .btn {
   background-color: #04AA6D;
   color: white;
-  padding: 5%;
-  border: none;
-  cursor: pointer;
-  width: 60%;
-  margin-bottom:2px;
-  opacity: 0.8;
   height: auto;
-  border-radius: 2px;
-}
-
-.ai-container-btn-new .btn:hover {
-  opacity: 1;
+  width: 70%;
+  padding: 5%;
 }
 
 .ai-container-btn-feedback .btn {
-  color: white;
-  padding: 5%;
-  border: none;
-  cursor: pointer;
-  width: 30%;
-  margin-left:2px;
-  margin-bottom:2px;
-  opacity: 0.8;
   height: auto;
-  border-radius: 2px;
+  width: 30%;
+  padding: 5%;
 }
 
 .ai-container-btn-feedback .yes{
   background-color: #04AA6D;
+  float: right;
+  margin-right: 15%;
 }
 
 .ai-container-btn-feedback .no {
   background-color: red;
-}
-
-.ai-container-btn-feedback .btn:hover {
-  opacity: 1;
+  float: left;
+  margin-left: 15%;
 }
 
 .ai-popup-feedback-container {

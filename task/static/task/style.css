@@ -55,6 +55,11 @@
   vertical-align: middle;
 }
 
+.button-submit{
+  width: 70%;
+  height:45px;
+}
+
 .vbar{
     background-color: rgba(202, 202, 202, 0.253);
     display: grid;
@@ -111,35 +116,22 @@
 
 .popup .btn{
   display: inline-block;
-  color: white;
-  cursor: pointer;
-  width: 50%;
-  opacity: 0.8;
+  width: 45%;
   height:10%;
   border-radius: 2px;
 }
 
 .popup .confirm{
   background-color: #04AA6D;
-  float: right;
-  width: 40%;
   border: none;
+  float: right;
 }
 
 .popup .cancel{
   background-color: white;
-  color: black;
   border: 2px solid #f1f1f1;
+  color: black;
   float: left;
-}
-
-.popup .btn:hover, .open-button:hover{
-  opacity: 1;
-}
-
-.button-submit{
-  width: 50%;
-  height:45px;
 }
 
 .chart-c{

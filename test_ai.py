@@ -17,6 +17,14 @@ def main():
     n_collinear = 2  # difficulty[t][0]
     n_noncollinear = 6  # difficulty[t][1]
 
+    std_collinear = 1.0
+    std_noncollinear = 1.0
+    noise_collinear = 0.01
+    coeff_intercept = 1.0
+    coeff_collinear = 0.1
+    coeff_noncollinear = 1.0
+    phi = 0.10
+
     # FORGET ABOUT THESE ????
     W_typezero = (7.0, 0.0)
     W_typeone = (7.0, -7.0)
@@ -34,16 +42,24 @@ def main():
 
     n_interactions = 20
 
-    training_dataset = generate_data(n_noncollinear=n_noncollinear,
-                                     n_collinear=n_collinear,
-                                     n=n_data_points)
-
-    training_X, training_y = training_dataset
+    kwargs_data = dict(
+        n_noncollinear=n_noncollinear,
+        n_collinear=n_collinear,
+        n=n_data_points,
+        std_collinear=std_collinear,
+        std_noncollinear=std_noncollinear,
+        noise_collinear=noise_collinear,
+        coeff_collinear=coeff_collinear,
+        coeff_noncollinear=coeff_noncollinear,
+        coeff_intercept=coeff_intercept,
+        phi=phi)
+    training_dataset = generate_data(**kwargs_data)
 
     if group_id == 0:
         return
 
     # ---------------- only for group 1 and 2 ------------------- #
+
     if group_id == 1:
         planning_function = no_educate_rollout_one_step_la
 
@@ -53,10 +69,8 @@ def main():
         raise ValueError(f"Group id incorrect: {group_id}")
 
     print("generating test data sets...")
-    test_datasets = [generate_data(n_noncollinear=n_noncollinear,
-                                   n_collinear=n_collinear,
-                                   n=n_data_points) for
-                     _ in range(n_test_dataset)]
+    test_datasets = [generate_data(**kwargs_data)
+                     for _ in range(n_test_dataset)]
     test_datasets.append(training_dataset)
 
     ai = AiAssistant(
