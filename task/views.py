@@ -66,6 +66,37 @@ def format_data(dataset):
     return json.dumps(data)
 
 
+def unformat_included_vars(included_vars):
+
+    included_vars = included_vars.replace("X", "")
+    included_vars = included_vars.split(",")
+    included_vars = [int(x) - 1 for x in included_vars if len(x)]
+    return included_vars
+
+
+def unformat_var(var):
+
+    if var == "educate":
+        return AiAssistant.EDUCATE
+
+    try:
+        return int(var.replace("X", "")) - 1
+    except ValueError:
+        return None
+
+
+def format_rec(rec_item, rec_item_cor):
+
+    if rec_item == AiAssistant.EDUCATE:
+        rec_item = "educate"
+        rec_item_cor = None
+    else:
+        rec_item = f"X{rec_item + 1}"
+        rec_item_cor = f"X{rec_item_cor + 1}"
+
+    return rec_item, rec_item_cor
+
+
 def init(user_id, group_id):
 
     uds = UserData.objects.filter(user_id=user_id)
@@ -150,37 +181,6 @@ def init(user_id, group_id):
     um.save()
     print("Done")
     return data
-
-
-def unformat_included_vars(included_vars):
-
-    included_vars = included_vars.replace("X", "")
-    included_vars = included_vars.split(",")
-    included_vars = [int(x) - 1 for x in included_vars if len(x)]
-    return included_vars
-
-
-def unformat_var(var):
-
-    if var == "educate":
-        return AiAssistant.EDUCATE
-
-    try:
-        return int(var.replace("X", "")) - 1
-    except ValueError:
-        return None
-
-
-def format_rec(rec_item, rec_item_cor):
-
-    if rec_item == AiAssistant.EDUCATE:
-        rec_item = "educate"
-        rec_item_cor = None
-    else:
-        rec_item = f"X{rec_item + 1}"
-        rec_item_cor = f"X{rec_item_cor + 1}"
-
-    return rec_item, rec_item_cor
 
 
 def get_recommendation(user_id, included_vars):
