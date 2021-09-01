@@ -27,8 +27,8 @@ class Action:
     VIS_2_Y = "vis2-y"
     ADD = "add"
     REMOVE = "remove"
-    AI_ACCEPT = "accept"
-    AI_REFUSE = "refuse"
+    AI_YES = "accept"
+    AI_NO = "refuse"
     AI_IGNORE = "ignore"
     AI_NEW = "new"
     AI_CLOSE_TUTORIAL = "close-tutorial"
@@ -47,7 +47,7 @@ class Action:
     @classmethod
     def trigger_feedback(cls):
         return [
-            cls.AI_ACCEPT, cls.AI_REFUSE, cls.AI_IGNORE,
+            cls.AI_YES, cls.AI_NO, cls.AI_IGNORE,
             cls.AI_CLOSE_TUTORIAL,
             cls.ADD, cls.REMOVE
         ]
