@@ -14,8 +14,8 @@ def main():
     n_data_points = 100
     n_test_dataset = 10
 
-    n_collinear = 2  # difficulty[t][0]
-    n_noncollinear = 6  # difficulty[t][1]
+    n_collinear = 2
+    n_noncollinear = 6
 
     std_collinear = 1.0
     std_noncollinear = 1.0
@@ -25,14 +25,12 @@ def main():
     coeff_noncollinear = 1.0
     phi = 0.10
 
-    # FORGET ABOUT THESE ????
-    W_typezero = (7.0, 0.0)
-    W_typeone = (7.0, -7.0)
-
     theta_1 = 1.0
     theta_2 = 1.0
 
     educability = 0.30
+    forgetting = 0.00
+
     init_var_cost = 0.05
     init_edu_cost = 0.5
 
@@ -79,8 +77,7 @@ def main():
         planning_function=planning_function,
         stan_compiled_model_file="task/ai/stan_model/mixture_model_w_ed.pkl",
         educability=educability,
-        w_type_zero=W_typezero,
-        w_type_one=W_typeone,
+        forgetting=forgetting,
         cost_var=init_var_cost,
         cost_edu=init_edu_cost,
         n_interactions=n_interactions,

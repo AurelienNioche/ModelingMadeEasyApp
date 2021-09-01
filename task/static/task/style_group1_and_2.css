@@ -104,16 +104,9 @@
   height:100%;
 }
 
-.popup .confirm {
+.ai-popup-feedback-container .confirm {
   background-color: red;
   float: right;
-}
-
-.popup .cancel {
-  background-color: white;
-  color: black;
-  border: 2px solid #f1f1f1;
-  float: left;
 }
 
 .popup-tutorial {

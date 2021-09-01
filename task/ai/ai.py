@@ -17,14 +17,13 @@ class AiAssistant:
             stan_compiled_model_file,
             cost_var,
             cost_edu,
-            w_type_zero,
-            w_type_one,
             theta_1,
             theta_2,
             heuristic_n_samples,
             user_switch_sim_a,
             terminal_cost_err_mlt,
             educability,
+            forgetting,
             n_interactions,
             n_collinear,
             n_noncollinear):
@@ -36,8 +35,9 @@ class AiAssistant:
             1)))
         self.n_covars = training_X.shape[1]
         self.data_dict = {
-            "N": 0, "x": [], "y": [], "beta": [w_type_zero, w_type_one],
-            "educability": educability, "forgetting": 0.0}
+            "N": 0, "x": [], "y": [],
+            "educability": educability,
+            "forgetting": forgetting}
 
         # cost[0,...,n_covars-1] is recommendation cost per covariate.
         # cost[n_covars] is educate cost.
@@ -112,7 +112,7 @@ class AiAssistant:
         # if recommendation a variable
         if is_rec_var:
             act_in = r_i
-            to_cor, _ = self.select_to_cor_and_get_max_cor(
+            to_cor, _ = self._select_to_cor_and_get_max_cor(
                 act_in, included_vars)
 
         # if *educate*
@@ -134,7 +134,7 @@ class AiAssistant:
             outcome = 0
 
         else:
-            _, max_cross_cor = self.select_to_cor_and_get_max_cor(
+            _, max_cross_cor = self._select_to_cor_and_get_max_cor(
                 act_in, included_vars)
 
             # Generate the action's observation vector for the user:
@@ -170,7 +170,7 @@ class AiAssistant:
 
         self.i += 1
 
-    def select_to_cor_and_get_max_cor(self, act_in, included_vars):
+    def _select_to_cor_and_get_max_cor(self, act_in, included_vars):
         # Get the currently selected variables as boolean mask
         mask = torch.zeros(self.n_covars + 1, dtype=bool)
         mask[included_vars] = True

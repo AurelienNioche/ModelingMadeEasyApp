@@ -22,12 +22,8 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path('', include('intro.urls')),
     path('task/', include('task.urls')),
-    path('group0/', include('group0.urls')),
-    path('group1/', include('group1.urls')),
-    path('group2/', include('group2.urls')),
     path('consent_form/', include('consent_form.urls')),
     path('end/', include('end.urls')),
-    path('exp_tutorial/', include('exp_tutorial.urls')),
     path('modeling_test/', include('modeling_test.urls')),
     path('pre_questionnaire/', include('pre_questionnaire.urls')),
     path('survey/', include('survey.urls')),

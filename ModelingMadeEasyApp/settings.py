@@ -31,12 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'group0.apps.Group0Config',
-    'group1.apps.Group1Config',
-    'group2.apps.Group2Config',
     'consent_form.apps.ConsentFormConfig',
     'end.apps.EndConfig',
-    'exp_tutorial.apps.ExpTutorialConfig',
     'intro.apps.IntroConfig',
     'modeling_test.apps.ModelingTestConfig',
     'pre_questionnaire.apps.PreQuestionnaireConfig',

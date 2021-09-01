@@ -42,9 +42,8 @@ def user_simulator_switching(action, W, a, educability, user_type=0):
         return user_type_
 
     else:
-        probs = a + action @ W[user_type]
-
-        a_o = dist.Bernoulli(logits=probs).sample()
+        logits = a + action @ W[user_type]
+        a_o = dist.Bernoulli(logits=logits).sample()
         return int(a_o.item())
 
 
@@ -98,7 +97,7 @@ def terminal_cost(test_datasets,
                 W=torch.tensor([[user_model[1], user_model[2]],
                                 [user_model[3], user_model[4]]],
                                dtype=torch.double),
-                a=1.0,
+                a=user_switch_a,
                 educability=user_model[5],
                 user_type=user_model[0])
 
