@@ -140,7 +140,7 @@ function visualizeReco() {
 
 function varIncludedInModel(var_name) {
     let included = false;
-    $("#leftValues option").each(function() {
+    $("#var-included option").each(function() {
         let var_value = $(this).val();
         if (var_value === var_name) {
             included = true;
@@ -165,7 +165,7 @@ function includeVarInModel(var_name="") {
         console.log("Var " + var_name + " already included");
     }else {
         console.log("Including " + var_name);
-        switchVarInModel(rec_item, "rightValues", "leftValues");
+        switchVarInModel(rec_item, "var-excluded", "var-included");
     }
 }
 
@@ -174,7 +174,7 @@ function excludeVarFromModel(var_name="") {
 
     let included = varIncludedInModel(var_name)
     if (included) {
-        switchVarInModel(rec_item, "leftValues", "rightValues");
+        switchVarInModel(rec_item, "var-included", "var-excluded");
     } else {
         console.log("Variable already excluded")
     }
@@ -183,7 +183,7 @@ function excludeVarFromModel(var_name="") {
 function AIaskUserForNewSuggestion() {
     $("#ai-container-btn-feedback").hide();
     $("#ai-container-btn-new").show();
-    AIupdateMessage("Would like me to help you exploring the variables?");
+    AIupdateMessage("Would you like me to help you exploring the variables?");
 }
 
 function AIupdateMessage(message="") {
@@ -201,17 +201,17 @@ function openFullTutorial() {
 
 
 function unSelectEverythingInModel() {
-    $("#leftValues option:selected").removeAttr("selected");
-    $("#rightValues option:selected").removeAttr("selected");
+    $("#var-included option:selected").removeAttr("selected");
+    $("#var-excluded option:selected").removeAttr("selected");
 }
 
 function selectRecInModel() {
     unSelectEverythingInModel();
     let included = varIncludedInModel(rec_item)
     if (included) {
-        $("#leftValues").val(rec_item);
+        $("#var-included").val(rec_item);
     } else {
-        $("#rightValues").val(rec_item);
+        $("#var-excluded").val(rec_item);
     }
 }
 
@@ -221,14 +221,14 @@ function showAiPopupFeedback() {
 
 function getIncludedVariables() {
     let values = [];
-    $("#leftValues option").each(function()
+    $("#var-included option").each(function()
     {
         values.push($(this).val());
     });
     return values;
 }
 
-$('#leftValues').change(function(){
+$('#var-included').change(function(){
     let value = $(this).val();
     console.log("select left " + value);
     if (pending_rec) {
@@ -236,7 +236,7 @@ $('#leftValues').change(function(){
     }
 })
 
-$('#rightValues').change(function(){
+$('#var-excluded').change(function(){
     let value = $(this).val();
     console.log("select right " + value);
     if (pending_rec) {
@@ -291,27 +291,27 @@ $("#new").click(function(){
     AIupdateMessage("Let me think...");
 })
 
-$("#btnLeft").click(function () {
+$("#btn-include").click(function () {
     if (pending_rec) {
         showAiPopupFeedback();
         return;
     }
-    let selectedItem = $("#rightValues option:selected");
-    $("#leftValues").append(selectedItem);
+    let selectedItem = $("#var-excluded option:selected");
+    $("#var-included").append(selectedItem);
     sendInfoToServer("add", selectedItem.val());
 });
 
-$("#btnRight").click(function () {
+$("#btn-exclude").click(function () {
     if (pending_rec) {
         showAiPopupFeedback();
         return;
     }
-    let selectedItem = $("#leftValues option:selected");
-    $("#rightValues").append(selectedItem);
+    let selectedItem = $("#var-included option:selected");
+    $("#var-excluded").append(selectedItem);
     sendInfoToServer("remove", selectedItem.val());
 });
 
-$('select#vis1-x').click(function(){
+$('select#vis1-x').change(function(){
     let userSelectedX = $("#vis1-x").val()
     if (pending_rec) {
         pending_action = "vis1-x";
@@ -326,7 +326,7 @@ $('select#vis1-x').click(function(){
     }
 });
 
-$('select#vis2-y').click(function(){
+$('select#vis2-y').change(function(){
 	const userSelectedX = $("#vis1-x").val();
     const userSelectedY = $("#vis2-y").val();
     visualize2vars(userSelectedX, userSelectedY);
@@ -357,7 +357,7 @@ const X_labels = labels.slice(0,-1);
 Y_label = labels[labels.length - 1];
 
 // Populate select options
-populate_select_options(X_labels, "#rightValues");
+populate_select_options(X_labels, "#var-excluded");
 populate_select_options(X_labels, "#vis1-x");
 populate_select_options(X_labels, "#vis2-y");
 
@@ -368,7 +368,7 @@ visualize2vars(labels[0], labels[0]);
 // Select variables in list boxes
 $("#vis1-x").val(labels[0]);
 $("#vis2-y").val(labels[0]);
-$("#rightValues").val(labels[0]);
+$("#var-excluded").val(labels[0]);
 
 // visualizeReco();
 console.log(allData);

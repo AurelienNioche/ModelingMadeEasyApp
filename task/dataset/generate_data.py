@@ -8,26 +8,22 @@ def generate_data(n_collinear, n_noncollinear, n,
                   coeff_collinear,
                   coeff_noncollinear,
                   coeff_intercept,
-                  phi):
+                  phi, seed):
+
+    torch.manual_seed(seed)
 
     coeffs = torch.zeros(n_collinear + n_noncollinear)
     coeffs[:n_collinear] = coeff_collinear
     coeffs[n_collinear:] = coeff_noncollinear
 
-    x_colin = Normal(0, std_collinear).sample((n, n_collinear))
-    x_colin = x_colin.squeeze()
-
-    x_colin_test = Normal(0, std_collinear).sample((n, n_collinear))
-    x_colin_test = x_colin_test.squeeze()
-
+    # Generate co-linear covariates
+    common_colin = Normal(0, std_collinear).sample((n, ))
+    x_colin = Normal(0.0, noise_collinear).sample((n, n_collinear))
     for i in range(n_collinear):
-        z = Normal(0.0, noise_collinear).sample((n, ))
-        x_colin[:, i] += z.squeeze()
-        x_colin_test[:, i] += z.squeeze()
+        x_colin[:, i] += common_colin
 
     # Generate non co-linear covariates by sampling them independently
     x_noncolin = Normal(0.0, std_noncollinear).sample((n, n_noncollinear))
-    x_noncolin = x_noncolin.squeeze()
 
     design_matrix = torch.cat((x_colin, x_noncolin), dim=1)
 
@@ -37,6 +33,6 @@ def generate_data(n_collinear, n_noncollinear, n,
     reg_term = design_matrix @ coeffs
 
     output_rv = MultivariateNormal(
-        torch.ones(n) * coeff_intercept + reg_term, covar_matrix).sample()
+        coeff_intercept + reg_term, covar_matrix).sample()
 
     return design_matrix, output_rv

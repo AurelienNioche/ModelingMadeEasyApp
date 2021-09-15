@@ -4,25 +4,29 @@
     </div>
     <div class = "note-container">
         <div class="note">
-            Please choose the variables to be included in the model by
-            selecting it and clicking "<<" to move it to the left box and ">>" for unselecting.
-            {%  if group_id > 0 %}
-                AI would give you advice based on your selection, and please submit your final choice at last.
-            {%  endif %}
+            Include a variable in the model by
+            selecting it in the left box and clicking ">>".
+            Exclude a variable by selecting in in the right box and clicking "<<".
+{#            {%  if group_id > 0 %}#}
+{#                AI would give you advice based on your selection.#}
+{#            {%  endif %}#}
+            Submit your final choice when you feel ready.
         </div>
     </div>
     <div class="model-container">
         <div class="model-left">
-            <p style="font-size:80%">Selected Variable</p>
-            <label for="leftValues"></label><select id="leftValues" size="5"></select>
+            <p style="font-size:80%">Excluded Variables</p>
+            <label for="var-excluded"></label>
+            <select id="var-excluded" size="5"></select>
         </div>
         <div class="arrow">
-            <input type="button" id="btnLeft" value="&lt;&lt;" />
-            <input type="button" id="btnRight" value="&gt;&gt;" />
+            <input type="button" id="btn-include" value="&gt;&gt;" />
+            <input type="button" id="btn-exclude" value="&lt;&lt;" />
         </div>
         <div class="model-right">
-            <p style="font-size:80%">Variable Pool</p>
-            <label for="rightValues"></label><select id="rightValues" size="4"></select>
+            <p style="font-size:80%">Included Variables</p>
+            <label for="var-included"></label>
+            <select id="var-included" size="5"></select>
         </div>
     </div>
     <div class="button-submit-container">

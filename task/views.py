@@ -126,7 +126,8 @@ def init(user_id, group_id):
         coeff_noncollinear=config.COEFF_NONCOLLINEAR,
         coeff_intercept=config.COEFF_INTERCEPT,
         phi=config.PHI)
-    training_dataset = generate_data(**kwargs_data)
+    training_dataset = generate_data(**kwargs_data,
+                                     seed=config.TRAINING_DATASET_SEED)
     data = format_data(training_dataset)
     print("Done")
 
@@ -150,8 +151,8 @@ def init(user_id, group_id):
 
     print(f"user_id={user_id}: Generating test data sets...",
           end=" ", flush=True)
-    test_datasets = [generate_data(**kwargs_data)
-                     for _ in range(config.N_TEST_DATASET)]
+    test_datasets = [generate_data(**kwargs_data, seed=seed)
+                     for seed in config.TEST_DATASET_SEEDS]
     test_datasets.append(training_dataset)
     print("Done")
     print(f"user_id={user_id}: Creating ai assistant...",

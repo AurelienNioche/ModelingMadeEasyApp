@@ -37,3 +37,6 @@ In `task/views.py` check that:
 
 
 Check the config for generating data and AI in `task/config/config.py`.
+
+Note that for now, the dataset produced are the same for all users 
+(as they are using the same seeds).
