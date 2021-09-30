@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# stan model pickle
+task/ai/stan_model/mixture_model_w_ed.pkl
+
 # C extensions
 *.so
 
