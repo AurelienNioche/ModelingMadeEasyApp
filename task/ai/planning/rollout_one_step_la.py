@@ -120,40 +120,32 @@ def rollout_one_step_la(
     for action_index in range(n_covars + 1):
         # Recommend action
         if action_index < n_covars:
+            kwargs_rollout = dict(
+                    corr_mat=corr_mat,
+                    user_model=sample_user_model,
+                    cost=cost,
+                    time_to_go=time_to_go - 1,
+                    n_collinear=n_collinear,
+                    n_noncollinear=n_noncollinear,
+                    test_datasets=test_datasets,
+                    theta_1=theta_1,
+                    theta_2=theta_2,
+                    n_samples=heuristic_n_samples,
+                    user_switch_sim_a=user_switch_sim_a,
+                    terminal_cost_err_mlt=terminal_cost_err_mlt)
+            
+            
             # Make sure this is proper copy
             xi_1 = xi.clone()
             xi_1[action_index] = True
-            cost_to_go_1 = random_base_heuristic_weducate(
-                xi=xi_1,
-                corr_mat=corr_mat,
-                user_model=sample_user_model,
-                cost=cost,
-                time_to_go=time_to_go - 1,
-                n_collinear=n_collinear,
-                n_noncollinear=n_noncollinear,
-                test_datasets=test_datasets,
-                theta_1=theta_1,
-                theta_2=theta_2,
-                n_samples=heuristic_n_samples,
-                user_switch_sim_a=user_switch_sim_a,
-                terminal_cost_err_mlt=terminal_cost_err_mlt)
+            # Rollout if variable is included
+            cost_to_go_1 = random_base_heuristic_weducate(xi=xi_1, **kwargs_rollout)
+
 
             xi_0 = xi.clone()
             xi_0[action_index] = False
-            cost_to_go_0 = random_base_heuristic_weducate(
-                xi=xi_1,
-                corr_mat=corr_mat,
-                user_model=sample_user_model,
-                cost=cost,
-                time_to_go=time_to_go - 1,
-                n_collinear=n_collinear,
-                n_noncollinear=n_noncollinear,
-                test_datasets=test_datasets,
-                theta_1=theta_1,
-                theta_2=theta_2,
-                n_samples=heuristic_n_samples,
-                user_switch_sim_a=user_switch_sim_a,
-                terminal_cost_err_mlt=terminal_cost_err_mlt)
+            # Rollout if variable is not included
+            cost_to_go_0 = random_base_heuristic_weducate(xi=xi_0, **kwargs_rollout)
 
             q_factors[action_index] += \
                 probs_per_covar[action_index] \
@@ -161,58 +153,38 @@ def rollout_one_step_la(
                 + (1 - probs_per_covar[action_index]) \
                 * cost_to_go_0
 
+        # Tutoring action
         else:
+            kwargs_rollout = dict(
+                    xi=xi,
+                    corr_mat=corr_mat,
+                    cost=cost,
+                    time_to_go=time_to_go - 1,
+                    n_collinear=n_collinear,
+                    n_noncollinear=n_noncollinear,
+                    test_datasets=test_datasets,
+                    theta_1=theta_1,
+                    theta_2=theta_2,
+                    n_samples=heuristic_n_samples,
+                    user_switch_sim_a=user_switch_sim_a,
+                    terminal_cost_err_mlt=terminal_cost_err_mlt)
+            
             if user_type == 0:
                 user_model_1 = (
                     1, sample_user_model[1], sample_user_model[2], sample_user_model[3], sample_user_model[4],
                     sample_user_model[5])
-                cost_to_go_1 = random_base_heuristic_weducate(
-                    xi=xi,
-                    corr_mat=corr_mat,
-                    user_model=user_model_1,
-                    cost=cost,
-                    time_to_go=time_to_go - 1,
-                    n_collinear=n_collinear,
-                    n_noncollinear=n_noncollinear,
-                    test_datasets=test_datasets,
-                    theta_1=theta_1,
-                    theta_2=theta_2,
-                    n_samples=heuristic_n_samples,
-                    user_switch_sim_a=user_switch_sim_a,
-                    terminal_cost_err_mlt=terminal_cost_err_mlt)
-
-                cost_to_go_0 = random_base_heuristic_weducate(
-                    xi=xi,
-                    corr_mat=corr_mat,
-                    user_model=sample_user_model,
-                    cost=cost,
-                    time_to_go=time_to_go - 1,
-                    n_collinear=n_collinear,
-                    n_noncollinear=n_noncollinear,
-                    test_datasets=test_datasets,
-                    theta_1=theta_1,
-                    theta_2=theta_2,
-                    n_samples=heuristic_n_samples,
-                    user_switch_sim_a=user_switch_sim_a,
-                    terminal_cost_err_mlt=terminal_cost_err_mlt)
+                
+                # Rollout if user transitioned to type 1
+                cost_to_go_1 = random_base_heuristic_weducate(user_model=user_model_1, **kwargs_rollout)
+                
+                # Rollout if user stayed at type 0
+                cost_to_go_0 = random_base_heuristic_weducate(user_model=sample_user_model, **kwargs_rollout)
 
                 q_factors[action_index] += educability * cost_to_go_1 + (1 - educability) * cost_to_go_0
 
             else:
-                cost_to_go = random_base_heuristic_weducate(
-                    xi=xi,
-                    corr_mat=corr_mat,
-                    user_model=sample_user_model,
-                    cost=cost,
-                    time_to_go=time_to_go - 1,
-                    n_collinear=n_collinear,
-                    n_noncollinear=n_noncollinear,
-                    test_datasets=test_datasets,
-                    theta_1=theta_1,
-                    theta_2=theta_2,
-                    n_samples=heuristic_n_samples,
-                    user_switch_sim_a=user_switch_sim_a,
-                    terminal_cost_err_mlt=terminal_cost_err_mlt)
+                # Rollout if user stayed at type 1 (no other option)
+                cost_to_go = random_base_heuristic_weducate(user_model=sample_user_model, **kwargs_rollout)
 
                 q_factors[action_index] += cost_to_go
 

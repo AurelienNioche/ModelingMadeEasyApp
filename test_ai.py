@@ -39,6 +39,8 @@ def main():
     heuristic_n_samples = 10
 
     n_interactions = 20
+    
+    base_seed = 1000
 
     kwargs_data = dict(
         n_noncollinear=n_noncollinear,
@@ -51,7 +53,7 @@ def main():
         coeff_noncollinear=coeff_noncollinear,
         coeff_intercept=coeff_intercept,
         phi=phi)
-    training_dataset = generate_data(**kwargs_data)
+    training_dataset = generate_data(seed=base_seed, **kwargs_data)
 
     if group_id == 0:
         return
@@ -67,8 +69,8 @@ def main():
         raise ValueError(f"Group id incorrect: {group_id}")
 
     print("generating test data sets...")
-    test_datasets = [generate_data(**kwargs_data)
-                     for _ in range(n_test_dataset)]
+    test_datasets = [generate_data(seed=base_seed + i, **kwargs_data)
+                     for i in range(n_test_dataset)]
     test_datasets.append(training_dataset)
 
     ai = AiAssistant(
