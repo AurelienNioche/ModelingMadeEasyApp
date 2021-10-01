@@ -69,7 +69,7 @@ def random_base_heuristic_noeducate(
 def no_educate_rollout_one_step_la(
         xi,
         corr_mat,
-        sample_user_model,
+        type_probs_mean, betas_mean, educability,
         cost,
         time_to_go,
         n_collinear,
@@ -85,6 +85,19 @@ def no_educate_rollout_one_step_la(
     """
     Rollout with one-step look-ahead without tutoring actions. So typical machine teaching with rollout.
     """
+    
+    
+    # Moving the Thompson-sampling directly into the planning
+    
+    sample_user_type = np.random.choice(2, p=type_probs_mean)
+
+    sample_user_model = (
+            sample_user_type, betas_mean[0], betas_mean[1], betas_mean[2],
+            betas_mean[3], educability)
+
+
+    ###
+    
 
     n_covars = n_collinear + n_noncollinear
 

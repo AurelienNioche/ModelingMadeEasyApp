@@ -81,11 +81,7 @@ class AiAssistant:
             # E[\alpha_0] and E[\alpha_1],
             # posterior expectations of type-0 and type-1 probabilities
             type_probs_mean = list(self.fit_summary.iloc[[strt, endn], 0])
-            sample_user_type = np.random.choice(2, p=type_probs_mean)
-
-            sample_user_model = (
-                sample_user_type, betas_mean[0], betas_mean[1], betas_mean[2],
-                betas_mean[3], self.educability)
+            
 
             # Returns educate OR recommend and if recommend,
             # recommended covar's index. IF not, r_i is None.
@@ -96,7 +92,10 @@ class AiAssistant:
             is_rec_var, r_i = self.planning_function(
                 xi=aux_data_dict,
                 corr_mat=self.corr_mat,
-                sample_user_model=sample_user_model,
+                #sample_user_model=sample_user_model,
+                type_probs_mean=type_probs_mean,
+                betas_mean = betas_mean,
+                educability=self.educability,
                 cost=self.cost,
                 time_to_go=self.n_interactions - self.i + 1,
                 n_collinear=self.n_collinear,
