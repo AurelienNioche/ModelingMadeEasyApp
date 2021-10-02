@@ -181,24 +181,23 @@ def rollout_one_step_TS_la(
                     user_switch_sim_a=user_switch_sim_a,
                     terminal_cost_err_mlt=terminal_cost_err_mlt)
             
-            if user_type == 0:
-                user_model_1 = (
+            
+            user_model_1 = (
                     1, sample_user_model[1], sample_user_model[2], sample_user_model[3], sample_user_model[4],
                     sample_user_model[5])
-                
-                # Rollout if user transitioned to type 1
-                cost_to_go_1 = random_base_heuristic_weducate(user_model=user_model_1, **kwargs_rollout)
-                
+            
+            # Rollout if user transitioned to type 1
+            cost_to_go_1 = random_base_heuristic_weducate(user_model=user_model_1, **kwargs_rollout)
+            
+            
+            if user_type == 0:
                 # Rollout if user stayed at type 0
                 cost_to_go_0 = random_base_heuristic_weducate(user_model=sample_user_model, **kwargs_rollout)
 
-                q_factors[action_index] += educability * cost_to_go_1 + (1 - educability) * cost_to_go_0
+                q_factors[action_index] += (educability * cost_to_go_1 + (1 - educability) * cost_to_go_0) * type_probs_mean[user_type]
 
             else:
-                # Rollout if user stayed at type 1 (no other option)
-                cost_to_go = random_base_heuristic_weducate(user_model=sample_user_model, **kwargs_rollout)
-
-                q_factors[action_index] += cost_to_go
+                q_factors[action_index] += cost_to_go_1 * type_probs_mean[user_type]
 
     # Do not repeat same action twice back to back.
     if prev_action is None:
