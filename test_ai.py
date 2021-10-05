@@ -9,7 +9,7 @@ from task.ai.planning.no_educate_rollout_one_step_la import no_educate_rollout_o
 
 def main():
 
-    group_id = 1
+    group_id = 2
 
     n_data_points = 100
     n_test_dataset = 10
