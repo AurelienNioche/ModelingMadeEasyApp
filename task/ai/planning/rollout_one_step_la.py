@@ -128,6 +128,7 @@ def rollout_one_step_TS_la(
     q_factors = torch.zeros(n_covars + 1)
     q_factors[-1] += cost[-1]
     q_factors[:n_covars] += cost[:n_covars]
+    
 
     for action_index in range(n_covars + 1):
         # Recommend action
@@ -240,20 +241,7 @@ def rollout_one_step_la(
     theta_1 = u_2,  theta_2 = u_1 on the paper.
     """
 
-    # Moving the Thompson-sampling directly into the planning
-    
-    sample_user_type = np.random.choice(2, p=type_probs_mean)
-
-    sample_user_model = (
-            sample_user_type, betas_mean[0], betas_mean[1], betas_mean[2],
-            betas_mean[3], educability)
-
-
-    ###
-
     n_covars = n_collinear + n_noncollinear
-
-    user_type, _, _, _, _, educability = sample_user_model
     phi_k = generate_features_k(n_covars, corr_mat, xi)
 
 
@@ -268,8 +256,12 @@ def rollout_one_step_la(
 
     for user_type in range(len(type_probs_mean)):
         
-        weights = torch.tensor([sample_user_model[(user_type * 2) + 1],
-                                                  sample_user_model[(user_type * 2) + 2]], dtype=torch.double)
+        sample_user_model = (
+            user_type, betas_mean[0], betas_mean[1], betas_mean[2],
+            betas_mean[3], educability)
+        
+        weights = torch.tensor([betas_mean[(user_type * 2)],
+                                                  betas_mean[(user_type * 2) + 1]], dtype=torch.double)
         logits_per_covar = phi_k @ weights
         probs_per_covar = expit(logits_per_covar)
         
